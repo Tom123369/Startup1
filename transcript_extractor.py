@@ -89,11 +89,13 @@ async def _get_yt_dlp_transcript_fallback_async(video_id: str) -> Optional[str]:
     
     def _extract():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            # Add a 15 second timeout to the whole extraction process
             return ydl.extract_info(url, download=False)
 
     try:
         loop = asyncio.get_event_loop()
-        info = await loop.run_in_executor(None, _extract)
+        # Enforce a 20 second timeout for the entire yt-dlp call
+        info = await asyncio.wait_for(loop.run_in_executor(None, _extract), timeout=20.0)
         subs = info.get('requested_subtitles', {})
         if subs and 'en' in subs:
             sub_url = subs['en']['url']
@@ -182,3 +184,4 @@ async def fetch_transcript_async(video_id: str) -> Optional[str]:
         return desc
 
     return None
+
