@@ -25,10 +25,12 @@ from ai_extractor import extract_predictions_async
 from market_data import get_batch_price_ranges_async
 from evaluator import evaluate_all_predictions
 
+from firebase_utils import save_analysis_to_firestore, load_analysis_from_firestore
+
 logger = logging.getLogger(__name__)
 
 # ── Global Semaphore ─────────────────────────────────────────────────────────
-transcript_semaphore = asyncio.Semaphore(20)
+transcript_semaphore = asyncio.Semaphore(15) # Optimized concurrency for Render CPU
 
 
 async def _run_stage_2_3(video: Dict) -> Dict:
@@ -84,8 +86,48 @@ async def run_pipeline(
     """
     start_time = time.time()
     max_videos = int(max_videos)
+    
+    # SXX: FAST CACHE CHECK
+    # Check if we already have a recent result for this influencer to avoid redundant work
+    # Sanitize inputs
+    clean_url = channel_url.strip().lower()
+    
+    # Resolve name FIRST to check cache folders
+    from ai_extractor import resolve_youtuber_name
+    potential_handle = clean_url.split('/')[-1] if '/' in clean_url else clean_url
+    yt_name = await resolve_youtuber_name(potential_handle)
+    
+    # Sanitize filename
+    safe_name = "".join(c for c in yt_name if c.isalnum() or c in (" ", "-", "_")).strip().replace(" ", "_")
+    results_dir = Path("results") / safe_name
+    
+    if results_dir.exists():
+        # Look for the absolute newest file in results dir
+        try:
+            files = sorted(results_dir.glob("evaluation_*.json"), key=os.path.getmtime, reverse=True)
+            if files:
+                newest = files[0]
+                # If the file is less than 6 hours old, return it instantly!
+                if (time.time() - os.path.getmtime(newest)) < 3600 * 6:
+                    logger.info(f"CACHE HIT: Found recent analysis for {yt_name} - loading instantly.")
+                    with open(newest, "r", encoding="utf-8") as f:
+                        cached_data = json.load(f)
+                        if progress_callback: await progress_callback("done", f"Loaded previous analysis for {yt_name} (Cached)")
+                        return cached_data
+        except Exception as e:
+            logger.debug(f"Local cache hit skipped: {e}")
+
+    # SXY: CLOUD PERSISTENCE (Firestore)
+    # Check if we have this cached in the cloud (survives Render redeploys)
+    cloud_data = await load_analysis_from_firestore(yt_name)
+    if cloud_data:
+        if progress_callback: await progress_callback("done", f"Loaded persistent analysis for {yt_name} (Cloud)")
+        return cloud_data
+
+    # Not in cache, proceed with full analysis
     all_valid_predictions = []
     all_na_predictions = []
+
     processed_video_ids = set()
     videos_metadata_cache = []
     
@@ -250,18 +292,18 @@ async def run_pipeline(
         "processing_time": total_time
     }
 
-    # S08: SAVE TO DISK (New Feature)
+    # S08: SAVE TO DISK & CLOUD
     try:
-        # Extract handle or use URL as base
-        clean_name = channel_url.split('/')[-1] if '/' in channel_url else channel_url
-        if not clean_name: clean_name = channel_url
-        
-        from ai_extractor import resolve_youtuber_name
-        yt_name = await resolve_youtuber_name(clean_name)
         response["influencer_name"] = yt_name
         _save_results_to_disk(yt_name, response)
-    except:
+        # Persistent Storage Backup
+        save_analysis_to_firestore(yt_name, response)
+    except Exception as e:
+        logger.error(f"Save failed: {e}")
         response["influencer_name"] = "Channel_Analysis"
         _save_results_to_disk("Channel_Analysis", response)
 
     return response
+
+
+
