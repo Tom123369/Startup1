@@ -20,6 +20,11 @@ from pydantic import BaseModel
 from pipeline import run_pipeline
 from config import MAX_VIDEOS, RESEND_API_KEY, RESEND_FROM_EMAIL
 from ai_extractor import resolve_youtuber_name
+from firebase_utils import get_firestore_db
+
+# Initialize Persistent Storage (Cloud persistence for Render)
+get_firestore_db()
+
 
 # Temporary in-memory storage for codes (In production, use Redis)
 verification_codes: Dict[str, dict] = {}
@@ -268,11 +273,11 @@ async def send_verification_code(req: VerificationRequest):
                             </div>
                             <p style="font-size: 14px; color: #8b8fa4;">This code will expire in 10 minutes. If you did not request this code, you can ignore this email.</p>
                             <div style="text-align: center; margin-top: 20px;">
-                                <a href="https://predictiq.mauryabhatia007.workers.dev/" style="color: #f7931a; text-decoration: none; font-size: 14px; font-weight: 600;">← Return to PredictIQ</a>
+                                <a href="https://startup1-4.onrender.com/" style="color: #f7931a; text-decoration: none; font-size: 14px; font-weight: 600;">← Return to PredictIQ</a>
                             </div>
                             <hr style="border: 0; border-top: 1px solid #2a2d3e; margin: 32px 0;">
                             <p style="font-size: 12px; color: #5c6078; text-align: center;">© 2025 PredictIQ. AI-powered crypto tracker.</p>
-                            <p style="font-size: 10px; color: #3a3d4f; text-align: center;">Sent from predictiq.mauryabhatia007.workers.dev</p>
+                            <p style="font-size: 10px; color: #3a3d4f; text-align: center;">Sent from startup1-4.onrender.com</p>
                         </div>
                     """,
                 }
@@ -325,3 +330,4 @@ async def verify_code(req: VerificationVerify):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
