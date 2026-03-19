@@ -1,0 +1,4030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC Prediction Analyzer – YouTube Influencer Accuracy Tracker</title>
+    <meta name="description"
+        content="Analyze Bitcoin price predictions from YouTube influencers and evaluate their accuracy using real market data.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
+        import {
+            getAuth, onAuthStateChanged, signOut,
+            signInWithPopup, GoogleAuthProvider,
+            createUserWithEmailAndPassword, signInWithEmailAndPassword,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9M3jMkwbxc5mxIO7K_63ijlF69_48CeM",
+            authDomain: "startup-95965.firebaseapp.com",
+            projectId: "startup-95965",
+            storageBucket: "startup-95965.firebasestorage.app",
+            messagingSenderId: "485390998299",
+            appId: "1:485390998299:web:8c51494fc67b456ed711be",
+            measurementId: "G-M58DVF35ER"
+        };
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(firebaseApp);
+        const auth = getAuth(firebaseApp);
+        const provider = new GoogleAuthProvider();
+
+        window._auth = {
+            signInWithGoogle: () => signInWithPopup(auth, provider),
+            signInEmail: (email, pw) => signInWithEmailAndPassword(auth, email, pw),
+            signUpEmail: (email, pw, name) =>
+                createUserWithEmailAndPassword(auth, email, pw).then(cred =>
+                    updateProfile(cred.user, { displayName: name }).then(() => cred)
+                ),
+            signOut: () => signOut(auth),
+            auth: auth, // Export auth for later use
+        };
+    </script>
+
+    <style>
+        /* ── CSS Reset & Variables ─────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #040507;
+            --bg-secondary: #0a0c12;
+            --bg-card: #11141d;
+            --bg-card-hover: #181d29;
+            --bg-input: #06080c;
+            --border: #1e2430;
+            --border-subtle: #161b24;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --accent-orange: #f59e0b;
+            --accent-orange-glow: rgba(245, 158, 11, 0.15);
+            --accent-green: #10b981;
+            --accent-green-glow: rgba(16, 185, 129, 0.12);
+            --accent-red: #f43f5e;
+            --accent-red-glow: rgba(244, 63, 94, 0.12);
+            --accent-blue: #3b82f6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.12);
+            --accent-yellow: #facc15;
+            --accent-yellow-glow: rgba(250, 204, 21, 0.12);
+            --accent-purple: #8b5cf6;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.4);
+            --shadow-glow: 0 0 30px var(--accent-orange-glow);
+
+            --font-body: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Background Gradient ──────────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 20%, rgba(247, 147, 26, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(167, 139, 250, 0.03) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── Layout ───────────────────────────────────────────────── */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ── Header ───────────────────────────────────────────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header__logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header__icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 0 15px var(--accent-orange-glow);
+        }
+
+        .header__title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header__subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ── Search Section ───────────────────────────────────────── */
+        .search-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .search-input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input-group__icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px var(--accent-orange-glow);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-lg);
+            z-index: 1000;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            margin-top: 1px;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .search-result-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .search-result-item__icon {
+            font-size: 1.2rem;
+        }
+
+        .search-result-item__content {
+            flex: 1;
+        }
+
+        .search-result-item__name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .search-result-item__url {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .video-count-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-count-group label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .video-count-input {
+            width: 80px;
+            padding: 0.9rem 0.75rem;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-align: center;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .video-count-input:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px var(--accent-orange-glow);
+        }
+
+        .btn-analyze {
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, var(--accent-orange), #e8850c);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px var(--accent-orange-glow);
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px var(--accent-orange-glow);
+        }
+
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-analyze .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Progress Bar ─────────────────────────────────────────── */
+        .progress-section {
+            display: none;
+            margin-bottom: 2rem;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .progress-stages {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-stage {
+            flex: 1;
+            height: 4px;
+            background: var(--bg-input);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .progress-stage.completed {
+            background: var(--accent-green);
+        }
+
+        .progress-stage.active {
+            background: linear-gradient(90deg, var(--accent-orange), transparent);
+            animation: pulse-bar 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bar {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .progress-label.active {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        .progress-label.completed {
+            color: var(--accent-green);
+        }
+
+        .progress-detail {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            min-height: 1.4rem;
+        }
+
+        /* ── Stats Grid ───────────────────────────────────────────── */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card--predictions::before {
+            background: var(--accent-blue);
+        }
+
+        .stat-card--accuracy::before {
+            background: var(--accent-orange);
+        }
+
+        .stat-card--correct::before {
+            background: var(--accent-green);
+        }
+
+        .stat-card--wrong::before {
+            background: var(--accent-red);
+        }
+
+        .stat-card--ongoing::before {
+            background: var(--accent-yellow);
+        }
+
+        .stat-card--time::before {
+            background: var(--accent-purple);
+        }
+
+        .stat-card__label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card__value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .stat-card--predictions .stat-card__value {
+            color: var(--accent-blue);
+        }
+
+        .stat-card--accuracy .stat-card__value {
+            color: var(--accent-orange);
+        }
+
+        .stat-card--correct .stat-card__value {
+            color: var(--accent-green);
+        }
+
+        .stat-card--wrong .stat-card__value {
+            color: var(--accent-red);
+        }
+
+        .stat-card--ongoing .stat-card__value {
+            color: var(--accent-yellow);
+        }
+
+        .stat-card--time .stat-card__value {
+            color: var(--accent-purple);
+        }
+
+        .stat-card__sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* ── Accuracy Ring ────────────────────────────────────────── */
+        .accuracy-ring {
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .accuracy-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .accuracy-ring__bg {
+            fill: none;
+            stroke: var(--bg-input);
+            stroke-width: 4;
+        }
+
+        .accuracy-ring__fill {
+            fill: none;
+            stroke: var(--accent-orange);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease-out;
+        }
+
+        /* ── Table ────────────────────────────────────────────────── */
+        .table-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.4rem 0.9rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: #fff;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-subtle);
+            transition: var(--transition);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        tbody td {
+            padding: 0.85rem 1rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        .td-title {
+            max-width: 260px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .td-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .td-title a:hover {
+            color: var(--accent-orange);
+        }
+
+        .td-prediction {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .td-price {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        .td-direction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .td-direction.up {
+            color: var(--accent-green);
+        }
+
+        .td-direction.down {
+            color: var(--accent-red);
+        }
+
+        /* ── Status Badge ─────────────────────────────────────────── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .badge--correct {
+            background: var(--accent-green-glow);
+            color: var(--accent-green);
+            border: 1px solid rgba(0, 214, 143, 0.25);
+        }
+
+        .badge--wrong {
+            background: var(--accent-red-glow);
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 77, 106, 0.25);
+        }
+
+        .badge--ongoing {
+            background: var(--accent-yellow-glow);
+            color: var(--accent-yellow);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        .badge--na {
+            background: rgba(139, 143, 164, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(139, 143, 164, 0.2);
+        }
+
+        /* ── Empty / Error States ─────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state__icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state__title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state__desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .error-banner {
+            background: var(--accent-red-glow);
+            border: 1px solid rgba(255, 77, 106, 0.3);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            color: var(--accent-red);
+            font-size: 0.9rem;
+        }
+
+        .error-banner.active {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* ── Footer ───────────────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 3rem 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        /* ── Scrollbar ────────────────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ── Responsive ───────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header__title {
+                font-size: 1.5rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .video-count-group {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .table-filters {
+                flex-wrap: wrap;
+            }
+
+            .progress-labels {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Animation on load ────────────────────────────────────── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeUp 0.5s ease-out both;
+        }
+
+        .stat-card {
+            animation: fadeUp 0.5s ease-out both;
+        }
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .stat-card:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .stat-card:nth-child(6) {
+            animation-delay: 0.3s;
+        }
+
+        /* ── Dashboard Layout ── */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .dashboard-main {
+            min-width: 0; /* Fix flex/grid overflow */
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        /* ── Influencer Card ── */
+        .influencer-card {
+            background: linear-gradient(135deg, var(--bg-card), #1e2530);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .influencer-card__header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .influencer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            border: 3px solid var(--border);
+        }
+
+        .influencer-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .influencer-badge {
+            display: inline-flex;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .influencer-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .inf-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .inf-stat__label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .inf-stat__value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ── Feed Section ── */
+        .feed-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .prediction-feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .feed-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: var(--transition);
+        }
+
+        .feed-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        .feed-card__top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .feed-coin {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent-orange);
+        }
+
+        .feed-prediction {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .feed-progress {
+            height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .feed-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-orange), #ea580c);
+            border-radius: 3px;
+            transition: width 1s ease-out;
+        }
+
+        .feed-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Sidebar Widgets ── */
+        .side-widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .side-widget h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .tracker-item {
+            margin-bottom: 1rem;
+        }
+
+        .tracker-item__info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .mini-progress {
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .mini-progress-bar {
+            height: 100%;
+            background: var(--accent-blue);
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem;
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            font-size: 0.9rem;
+        }
+
+        .user-row.active {
+            border: 1px solid var(--accent-orange-glow);
+            background: rgba(251, 146, 60, 0.05);
+        }
+
+        .user-row .rank {
+            font-weight: 800;
+            color: var(--accent-yellow);
+            width: 20px;
+        }
+
+        .user-row .score {
+            margin-left: auto;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .engagement-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-engage {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-engage:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        /* ── Table Improvements ── */
+        .table-title {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .table-search {
+            position: relative;
+        }
+
+        .table-search .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        .table-search input {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.4rem 0.75rem 0.4rem 2rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            width: 200px;
+            outline: none;
+        }
+
+        .table-search input:focus {
+            border-color: var(--accent-orange);
+            width: 240px;
+        }
+
+        .table-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .small-text {
+            opacity: 0.7;
+        }
+
+        .prediction-row.major-move {
+            background: rgba(16, 185, 129, 0.03);
+        }
+
+        .btn-view {
+            padding: 0.3rem 0.6rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .btn-view:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .stat-card--dominant {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--bg-card), #161d2b);
+            border-color: var(--accent-orange-glow);
+            padding: 2rem;
+        }
+
+        .stat-card--dominant .stat-card__value {
+            font-size: 3rem;
+        }
+
+        .stat-card__icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-card__trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .stat-card__trend.up { color: var(--accent-green); }
+        .stat-card__trend.down { color: var(--accent-red); }
+
+        /* Tooltip style */
+        [title] {
+            cursor: help;
+        }
+
+        /* ── Auth Overlay ───────────────────────────── */
+        #authOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 30% 20%, rgba(247,147,26,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                        rgba(10, 11, 15, 0.97);
+            backdrop-filter: blur(8px);
+            padding: 1rem;
+        }
+
+        .auth-card {
+            background: #12131a;
+            border: 1px solid #2a2d3e;
+            border-radius: 24px;
+            padding: 2.5rem 2.5rem 2rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+            animation: fadeUp 0.4s ease-out both;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-logo__icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #f7931a, #e8850c);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(247,147,26,0.35);
+            flex-shrink: 0;
+        }
+
+        .auth-logo__text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #e8eaf0 0%, #f7931a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-headline {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.4rem;
+        }
+
+        .auth-subline {
+            color: #8b8fa4;
+            font-size: 0.88rem;
+            margin-bottom: 1.75rem;
+        }
+
+        /* Google button */
+        .btn-google {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: #fff;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+
+        .btn-google:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-google svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+        }
+
+        .auth-divider span {
+            color: #5c6078;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #2a2d3e;
+        }
+
+        /* form fields */
+        .auth-field {
+            margin-bottom: 1rem;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #8b8fa4;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.04em;
+        }
+
+        .auth-input-wrap {
+            position: relative;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: #1a1c28;
+            border: 1.5px solid #2a2d3e;
+            border-radius: 10px;
+            color: #e8eaf0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: #f7931a;
+            box-shadow: 0 0 0 3px rgba(247,147,26,0.2);
+        }
+
+        .auth-input::placeholder { color: #5c6078; }
+
+        .toggle-pw {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #5c6078;
+            font-size: 1rem;
+            user-select: none;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toggle-pw:hover { color: #8b8fa4; }
+
+        .btn-auth-submit {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: linear-gradient(135deg, #f7931a, #e8850c);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(247,147,26,0.35);
+            margin-top: 0.25rem;
+        }
+
+        .btn-auth-submit:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(247,147,26,0.45);
+        }
+
+        .btn-auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: #8b8fa4;
+        }
+
+        .auth-toggle a {
+            color: #f7931a;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .auth-toggle a:hover { text-decoration: underline; }
+
+        .auth-error {
+            background: rgba(255,77,106,0.12);
+            border: 1px solid rgba(255,77,106,0.3);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            color: #ff4d6a;
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .auth-error.show { display: block; }
+
+        /* name field only shown in sign-up mode */
+        #nameField { display: none; }
+        .auth-card.signup-mode #nameField { display: block; }
+        .auth-card.signup-mode #signInHeadline { display: none; }
+        .auth-card.signup-mode #signUpHeadline { display: block; }
+        #signUpHeadline { display: none; }
+
+        /* ── User pill in header ─────────────────────── */
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f7931a, #e8850c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            color: #8b8fa4;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-signout {
+            padding: 0.3rem 0.75rem;
+            background: transparent;
+            border: 1px solid #2a2d3e;
+            border-radius: 8px;
+            color: #8b8fa4;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-signout:hover {
+            border-color: #ff4d6a;
+            color: #ff4d6a;
+        }
+
+        /* ══════════════════════════════════════════════
+           LANDING PAGE STYLES
+        ══════════════════════════════════════════════ */
+        #landingPage {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        /* Noise texture overlay */
+        #landingPage::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Landing Nav ── */
+        .lp-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 3rem;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all .3s;
+        }
+
+        .lp-nav__brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            text-decoration: none;
+        }
+
+        .lp-nav__logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #f7931a, #ff6b35);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px rgba(247,147,26,.5);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%,100% { box-shadow: 0 0 20px rgba(247,147,26,.5); }
+            50% { box-shadow: 0 0 40px rgba(247,147,26,.8), 0 0 60px rgba(247,147,26,.3); }
+        }
+
+        .lp-nav__name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            background: linear-gradient(90deg, #fff 0%, #f7931a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lp-nav__cta {
+            padding: .55rem 1.4rem;
+            background: linear-gradient(135deg, #f7931a, #e8850c);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .25s;
+            box-shadow: 0 4px 20px rgba(247,147,26,.4);
+        }
+
+        .lp-nav__cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(247,147,26,.6);
+        }
+
+        /* ── Hero Section ── */
+        .lp-hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        /* Animated gradient orbs */
+        .lp-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .lp-orb--1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(247,147,26,.2) 0%, transparent 70%);
+            top: -150px; left: -100px;
+            animation: orbFloat1 8s ease-in-out infinite;
+        }
+
+        .lp-orb--2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(99,102,241,.15) 0%, transparent 70%);
+            bottom: -100px; right: -80px;
+            animation: orbFloat2 10s ease-in-out infinite;
+        }
+
+        .lp-orb--3 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(34,197,94,.1) 0%, transparent 70%);
+            top: 40%; left: 50%;
+            transform: translateX(-50%);
+            animation: orbFloat3 12s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%,100% { transform: translate(0,0); }
+            33% { transform: translate(40px,-30px); }
+            66% { transform: translate(-20px, 40px); }
+        }
+
+        @keyframes orbFloat2 {
+            0%,100% { transform: translate(0,0); }
+            50% { transform: translate(-50px, -40px); }
+        }
+
+        @keyframes orbFloat3 {
+            0%,100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.2); }
+        }
+
+        /* Grid lines background */
+        .lp-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+        }
+
+        .lp-hero__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .45rem 1.1rem;
+            background: rgba(247,147,26,.1);
+            border: 1px solid rgba(247,147,26,.3);
+            border-radius: 50px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #f7931a;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInDown .6s ease-out both;
+        }
+
+        .lp-hero__badge-dot {
+            width: 6px; height: 6px;
+            background: #f7931a;
+            border-radius: 50%;
+            animation: blink 1.8s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%,100% { opacity:1; }
+            50% { opacity:.2; }
+        }
+
+        .lp-hero__headline {
+            font-size: clamp(3rem, 7vw, 6.5rem);
+            font-weight: 900;
+            letter-spacing: -.04em;
+            line-height: 1.04;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .7s .1s ease-out both;
+        }
+
+        .lp-hero__headline .grad {
+            background: linear-gradient(135deg, #f7931a 0%, #ff6b35 40%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lp-hero__sub {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: rgba(255,255,255,.55);
+            max-width: 620px;
+            line-height: 1.65;
+            margin-bottom: 3rem;
+            animation: fadeInUp .7s .2s ease-out both;
+        }
+
+        .lp-hero__actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp .7s .3s ease-out both;
+        }
+
+        .lp-btn-primary {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #f7931a, #e8850c);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            box-shadow: 0 4px 30px rgba(247,147,26,.5);
+            display: flex; align-items: center; gap: .6rem;
+        }
+
+        .lp-btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 50px rgba(247,147,26,.7);
+        }
+
+        .lp-btn-primary .arrow {
+            transition: transform .3s;
+        }
+
+        .lp-btn-primary:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .lp-btn-ghost {
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,.05);
+            color: rgba(255,255,255,.8);
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex; align-items: center; gap: .6rem;
+        }
+
+        .lp-btn-ghost:hover {
+            background: rgba(255,255,255,.1);
+            border-color: rgba(255,255,255,.3);
+            transform: translateY(-2px);
+        }
+
+        /* ── Stats ticker ── */
+        .lp-stats-bar {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 5rem;
+            padding: 2rem 3rem;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 20px;
+            animation: fadeInUp .7s .5s ease-out both;
+        }
+
+        .lp-stat {
+            text-align: center;
+        }
+
+        .lp-stat__num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -.04em;
+            background: linear-gradient(135deg, #fff 0%, #f7931a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lp-stat__label {
+            font-size: .78rem;
+            color: rgba(255,255,255,.4);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-top: .25rem;
+        }
+
+        /* ── How It Works ── */
+        .lp-section {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .lp-section__eyebrow {
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            color: #f7931a;
+            margin-bottom: .75rem;
+        }
+
+        .lp-section__title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -.04em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .lp-section__desc {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,.5);
+            max-width: 520px;
+            line-height: 1.7;
+            margin-bottom: 4rem;
+        }
+
+        /* Steps */
+        .lp-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .lp-step {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all .4s cubic-bezier(.4,0,.2,1);
+        }
+
+        .lp-step::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(247,147,26,.06) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .lp-step:hover {
+            border-color: rgba(247,147,26,.3);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(247,147,26,.1);
+        }
+
+        .lp-step:hover::before { opacity: 1; }
+
+        .lp-step__num {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -.05em;
+            background: linear-gradient(135deg, rgba(247,147,26,.3) 0%, rgba(247,147,26,.1) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .lp-step__icon {
+            width: 52px; height: 52px;
+            background: rgba(247,147,26,.12);
+            border: 1px solid rgba(247,147,26,.25);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .lp-step__title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: .6rem;
+        }
+
+        .lp-step__desc {
+            font-size: .9rem;
+            color: rgba(255,255,255,.45);
+            line-height: 1.7;
+        }
+
+        /* ── Feature Cards ── */
+        .lp-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lp-feat {
+            background: rgba(255,255,255,.025);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 20px;
+            padding: 2.25rem;
+            transition: all .4s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lp-feat::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--feat-color, #f7931a), transparent);
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .lp-feat:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,.12);
+            box-shadow: 0 16px 50px rgba(0,0,0,.4);
+        }
+
+        .lp-feat:hover::after { opacity: 1; }
+
+        .lp-feat__icon {
+            width: 48px; height: 48px;
+            border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+            background: var(--feat-bg, rgba(247,147,26,.12));
+            border: 1px solid var(--feat-border, rgba(247,147,26,.2));
+        }
+
+        .lp-feat__title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+
+        .lp-feat__desc {
+            font-size: .875rem;
+            color: rgba(255,255,255,.45);
+            line-height: 1.65;
+        }
+
+        /* ── Ticker tape ── */
+        .lp-ticker-wrap {
+            background: rgba(255,255,255,.02);
+            border-top: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            padding: 1.25rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .lp-ticker-wrap::before,
+        .lp-ticker-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; width: 120px;
+            z-index: 2;
+        }
+
+        .lp-ticker-wrap::before {
+            left: 0;
+            background: linear-gradient(90deg, #000, transparent);
+        }
+
+        .lp-ticker-wrap::after {
+            right: 0;
+            background: linear-gradient(-90deg, #000, transparent);
+        }
+
+        .lp-ticker {
+            display: flex;
+            gap: 3rem;
+            width: max-content;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .lp-ticker-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .875rem;
+            color: rgba(255,255,255,.5);
+            white-space: nowrap;
+        }
+
+        .lp-ticker-item .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ── CTA Section ── */
+        .lp-cta {
+            text-align: center;
+            padding: 8rem 2rem 10rem;
+            position: relative;
+        }
+
+        .lp-cta__glow {
+            position: absolute;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(247,147,26,.12) 0%, transparent 60%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .lp-cta__title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: -.04em;
+            line-height: 1.08;
+            margin-bottom: 1.25rem;
+        }
+
+        .lp-cta__desc {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,.5);
+            max-width: 480px;
+            margin: 0 auto 3rem;
+            line-height: 1.65;
+        }
+
+        /* ── Footer ── */
+        .lp-footer {
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding: 2.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .lp-footer__copy {
+            font-size: .8rem;
+            color: rgba(255,255,255,.25);
+        }
+
+        .lp-footer__brand {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .lp-footer__logo {
+            width: 26px; height: 26px;
+            background: linear-gradient(135deg, #f7931a, #ff6b35);
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .8rem;
+        }
+
+        .lp-footer__name {
+            font-size: .85rem;
+            font-weight: 700;
+            color: rgba(255,255,255,.5);
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity:0; transform: translateY(30px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity:0; transform: translateY(-20px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+
+        /* Scroll reveal */
+        .lp-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .8s cubic-bezier(.4,0,.2,1), transform .8s cubic-bezier(.4,0,.2,1);
+        }
+
+        .lp-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .lp-reveal:nth-child(2) { transition-delay: .1s; }
+        .lp-reveal:nth-child(3) { transition-delay: .2s; }
+        .lp-reveal:nth-child(4) { transition-delay: .3s; }
+        .lp-reveal:nth-child(5) { transition-delay: .4s; }
+        .lp-reveal:nth-child(6) { transition-delay: .5s; }
+
+        /* Divider line */
+        .lp-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .lp-nav { padding: 1rem 1.5rem; }
+            .lp-stats-bar { gap: 2rem; padding: 1.5rem; }
+            .lp-footer { flex-direction: column; align-items: center; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         LANDING PAGE
+    ══════════════════════════════════════════════════════════════ -->
+    <div id="landingPage">
+
+        <!-- Nav -->
+        <nav class="lp-nav" id="lpNav">
+            <a class="lp-nav__brand" href="#">
+                <div class="lp-nav__logo">₿</div>
+                <span class="lp-nav__name">PredictIQ</span>
+            </a>
+            <button class="lp-nav__cta" id="lpNavCta" onclick="showAuth()">Get Started Free</button>
+        </nav>
+
+        <!-- Hero -->
+        <section class="lp-hero">
+            <div class="lp-grid"></div>
+            <div class="lp-orb lp-orb--1"></div>
+            <div class="lp-orb lp-orb--2"></div>
+            <div class="lp-orb lp-orb--3"></div>
+
+            <div style="position:relative;z-index:1;width:100%;">
+                <div class="lp-hero__badge">
+                    <div class="lp-hero__badge-dot"></div>
+                    AI-Powered · Real Market Data · Live Accuracy
+                </div>
+
+                <h1 class="lp-hero__headline">
+                    Who Actually<br>
+                    <span class="grad">Predicts Bitcoin</span><br>
+                    Correctly?
+                </h1>
+
+                <p class="lp-hero__sub">
+                    PredictIQ uses AI to scan YouTube crypto influencers, extract their price predictions, and verify them against real market data — so you always know who to trust.
+                </p>
+
+                <div class="lp-hero__actions">
+                    <button class="lp-btn-primary" onclick="showAuth()">
+                        Start Analyzing Free
+                        <span class="arrow">→</span>
+                    </button>
+                    <button class="lp-btn-ghost" onclick="document.getElementById('lpHow').scrollIntoView({behavior:'smooth'})">
+                        ▶ See How It Works
+                    </button>
+                </div>
+
+                <div class="lp-stats-bar">
+                    <div class="lp-stat">
+                        <div class="lp-stat__num" id="cntAnalyzed">0</div>
+                        <div class="lp-stat__label">Videos Analyzed</div>
+                    </div>
+                    <div class="lp-stat">
+                        <div class="lp-stat__num" id="cntPredictions">0</div>
+                        <div class="lp-stat__label">Predictions Tracked</div>
+                    </div>
+                    <div class="lp-stat">
+                        <div class="lp-stat__num" id="cntAccuracy">0%</div>
+                        <div class="lp-stat__label">Avg Accuracy Measured</div>
+                    </div>
+                    <div class="lp-stat">
+                        <div class="lp-stat__num">Real-time</div>
+                        <div class="lp-stat__label">Market Verification</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ticker tape -->
+        <div class="lp-ticker-wrap">
+            <div class="lp-ticker" id="lpTicker">
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $95,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $120,000 · <b style="color:#ef4444">WRONG</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#f7931a;"></span>BTC → $85,000 · <b style="color:#f7931a">ONGOING</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $70,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $200,000 · <b style="color:#ef4444">WRONG</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $105,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#f7931a;"></span>BTC → $110,000 · <b style="color:#f7931a">ONGOING</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $150,000 · <b style="color:#ef4444">WRONG</b></div>
+                <!-- duplicate for seamless loop -->
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $95,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $120,000 · <b style="color:#ef4444">WRONG</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#f7931a;"></span>BTC → $85,000 · <b style="color:#f7931a">ONGOING</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $70,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $200,000 · <b style="color:#ef4444">WRONG</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#22c55e;"></span>BTC → $105,000 · <b style="color:#22c55e">CORRECT</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#f7931a;"></span>BTC → $110,000 · <b style="color:#f7931a">ONGOING</b></div>
+                <div class="lp-ticker-item"><span class="dot" style="background:#ef4444;"></span>BTC → $150,000 · <b style="color:#ef4444">WRONG</b></div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <section class="lp-section" id="lpHow">
+            <p class="lp-section__eyebrow lp-reveal">How It Works</p>
+            <h2 class="lp-section__title lp-reveal">From YouTube to<br>Verified Truth</h2>
+            <p class="lp-section__desc lp-reveal">Three intelligent steps that turn hours of crypto content into instant, data-backed insights.</p>
+
+            <div class="lp-steps">
+                <div class="lp-step lp-reveal">
+                    <div class="lp-step__num">01</div>
+                    <div class="lp-step__icon">🎬</div>
+                    <h3 class="lp-step__title">Paste a YouTube Channel</h3>
+                    <p class="lp-step__desc">Drop in any crypto influencer's YouTube channel URL. Our system automatically collects their latest videos and extracts full transcripts.</p>
+                </div>
+                <div class="lp-step lp-reveal">
+                    <div class="lp-step__num">02</div>
+                    <div class="lp-step__icon">🤖</div>
+                    <h3 class="lp-step__title">AI Extracts Predictions</h3>
+                    <p class="lp-step__desc">Our AI reads every word of each transcript, identifies explicit Bitcoin price targets, sentiment, direction, and timeframes — with zero hallucination.</p>
+                </div>
+                <div class="lp-step lp-reveal">
+                    <div class="lp-step__num">03</div>
+                    <div class="lp-step__icon">📊</div>
+                    <h3 class="lp-step__title">Real Market Verification</h3>
+                    <p class="lp-step__desc">Every prediction is cross-referenced against real BTC price data. You get a live accuracy score and a full breakdown — CORRECT, WRONG, or ONGOING.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="lp-divider"></div>
+
+        <!-- Features -->
+        <section class="lp-section" id="lpFeatures">
+            <p class="lp-section__eyebrow lp-reveal">Features</p>
+            <h2 class="lp-section__title lp-reveal">Everything You Need<br>to Stay Ahead</h2>
+            <p class="lp-section__desc lp-reveal">Built for crypto traders who want signal, not noise.</p>
+
+            <div class="lp-features">
+                <div class="lp-feat lp-reveal" style="--feat-color:#f7931a;--feat-bg:rgba(247,147,26,.1);--feat-border:rgba(247,147,26,.2)">
+                    <div class="lp-feat__icon">⚡</div>
+                    <h3 class="lp-feat__title">Real-Time Analysis</h3>
+                    <p class="lp-feat__desc">Live WebSocket streaming shows you stage-by-stage progress as the AI works through transcripts and fetches market data.</p>
+                </div>
+                <div class="lp-feat lp-reveal" style="--feat-color:#6366f1;--feat-bg:rgba(99,102,241,.1);--feat-border:rgba(99,102,241,.2)">
+                    <div class="lp-feat__icon" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2)">🧠</div>
+                    <h3 class="lp-feat__title">AI Precision Extraction</h3>
+                    <p class="lp-feat__desc">Distinguishes actual price targets from hypothetical breakout scenarios. Short-term and long-term timeframes handled separately.</p>
+                </div>
+                <div class="lp-feat lp-reveal" style="--feat-color:#22c55e;--feat-bg:rgba(34,197,94,.1);--feat-border:rgba(34,197,94,.2)">
+                    <div class="lp-feat__icon" style="background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2)">✅</div>
+                    <h3 class="lp-feat__title">Dual Timeframe Scoring</h3>
+                    <p class="lp-feat__desc">Short-term predictions evaluated on next-day data. Long-term targets tracked over weeks. Fair and accurate for both.</p>
+                </div>
+                <div class="lp-feat lp-reveal" style="--feat-color:#ffd700;--feat-bg:rgba(255,215,0,.08);--feat-border:rgba(255,215,0,.2)">
+                    <div class="lp-feat__icon" style="background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.15)">📈</div>
+                    <h3 class="lp-feat__title">Accuracy Leaderboard</h3>
+                    <p class="lp-feat__desc">See every prediction with date, price at call, highest/lowest after, and final verdict. Sort, filter, compare — all in one view.</p>
+                </div>
+                <div class="lp-feat lp-reveal" style="--feat-color:#f43f5e;--feat-bg:rgba(244,63,94,.1);--feat-border:rgba(244,63,94,.2)">
+                    <div class="lp-feat__icon" style="background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.2)">🔒</div>
+                    <h3 class="lp-feat__title">Private & Secure</h3>
+                    <p class="lp-feat__desc">Firebase authentication keeps your analyses private. Sign in with Google or email — your data stays yours.</p>
+                </div>
+                <div class="lp-feat lp-reveal" style="--feat-color:#a78bfa;--feat-bg:rgba(167,139,250,.1);--feat-border:rgba(167,139,250,.2)">
+                    <div class="lp-feat__icon" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.2)">🚀</div>
+                    <h3 class="lp-feat__title">Batch Processing</h3>
+                    <p class="lp-feat__desc">Analyze up to 500 videos in one run with smart retry logic, rate-limit handling, and parallel AI extraction pipelines.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="lp-divider"></div>
+
+        <!-- Final CTA -->
+        <section class="lp-cta">
+            <div class="lp-cta__glow"></div>
+            <div style="position:relative;z-index:1;">
+                <p class="lp-section__eyebrow" style="margin-bottom:1rem;">Free to Start</p>
+                <h2 class="lp-cta__title">
+                    Stop Guessing.<br>
+                    Start <span style="background:linear-gradient(135deg,#f7931a,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Knowing.</span>
+                </h2>
+                <p class="lp-cta__desc">
+                    Join analysts who use PredictIQ to cut through the noise and find the voices that actually get Bitcoin right.
+                </p>
+                <button class="lp-btn-primary" style="margin:0 auto;font-size:1.05rem;padding:1.1rem 3rem;" onclick="showAuth()">
+                    Get Started Free
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="lp-footer">
+            <div class="lp-footer__brand">
+                <div class="lp-footer__logo">₿</div>
+                <span class="lp-footer__name">PredictIQ</span>
+            </div>
+            <p class="lp-footer__copy">© 2025 PredictIQ. AI-powered crypto prediction tracker.</p>
+            <p class="lp-footer__copy">Built with ♥ for signal seekers.</p>
+        </footer>
+
+    </div>
+    <!-- END LANDING PAGE -->
+
+    <!-- ── Auth Overlay ───────────────────────────────────────────── -->
+    <div id="authOverlay">
+        <div class="auth-card" id="authCard">
+
+            <div class="auth-logo">
+                <div class="auth-logo__icon">₿</div>
+                <span class="auth-logo__text">Prediction Analyzer</span>
+            </div>
+
+            <h2 class="auth-headline" id="signInHeadline">Welcome back</h2>
+            <h2 class="auth-headline" id="signUpHeadline">Create account</h2>
+            <p class="auth-subline">Sign in to track YouTube crypto influencer accuracy</p>
+
+            <!-- Error message -->
+            <div class="auth-error" id="authError"></div>
+
+            <!-- Google Sign-In -->
+            <button class="btn-google" id="btnGoogle" onclick="handleGoogleSignIn()">
+                <!-- Google "G" SVG logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    <path fill="none" d="M0 0h48v48H0z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <div class="auth-divider"><span>or continue with email</span></div>
+
+            <!-- Email Form -->
+            <form id="authForm" onsubmit="handleEmailAuth(event)">
+
+                <div class="auth-field" id="nameField">
+                    <label for="authName">FULL NAME</label>
+                    <input type="text" class="auth-input" id="authName" placeholder="Satoshi Nakamoto" autocomplete="name">
+                </div>
+
+                <div class="auth-field">
+                    <label for="authEmail">EMAIL ADDRESS</label>
+                    <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="auth-field">
+                    <label for="authPassword">PASSWORD</label>
+                    <div class="auth-input-wrap">
+                        <input type="password" class="auth-input" id="authPassword"
+                            placeholder="••••••••" autocomplete="current-password" required style="padding-right:2.8rem;">
+                        <button type="button" class="toggle-pw" id="togglePw" onclick="togglePassword()">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth-submit" id="btnAuthSubmit">
+                    <span id="authBtnLabel">Sign In</span>
+                </button>
+            </form>
+
+            <p class="auth-toggle" id="authToggleText">
+                Don't have an account? <a onclick="toggleAuthMode()">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ── Verification Overlay ────────────────────────────────────── -->
+    <div id="verifyOverlay" style="display:none">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="auth-logo__icon" style="background:var(--accent-blue)">📧</div>
+                <span class="auth-logo__text">Check your Email</span>
+            </div>
+            <h2 class="auth-headline">Verify your Identity</h2>
+            <p class="auth-subline" id="verifySentTo">We sent a 6-digit code to your emailAddress. Please enter it below.</p>
+            
+            <div class="auth-field">
+                <label>VERIFICATION CODE</label>
+                <div class="otp-inputs">
+                    <input type="text" maxlength="6" id="otpCode" class="auth-input" placeholder="000000" style="text-align:center; font-size:1.5rem; letter-spacing:0.5rem; font-weight:800; border-color:var(--accent-orange)">
+                </div>
+            </div>
+
+            <button type="button" class="btn-auth-submit" id="btnVerifyCode" onclick="finalizeVerification()">
+                Verify Code
+            </button>
+            <p class="auth-toggle">
+                Didn't get it? <a onclick="resendCode()">Resend</a>
+            </p>
+        </div>
+    </div>
+
+    <style>
+        #verifyOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 11, 15, 0.98);
+            backdrop-filter: blur(12px);
+            padding: 1rem;
+        }
+    </style>
+
+    <!-- ── Main Application (shown only after login) ───────────────── -->
+    <div id="mainApp" style="display:none">
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="header animate-in">
+            <div class="header__logo">
+                <div class="header__icon">₿</div>
+                <div class="header__title-grp">
+                    <h1 class="header__title">Prediction Analyzer</h1>
+                    <p class="header__status"><span class="pulse-dot"></span> System Live</p>
+                </div>
+            </div>
+            <div class="header-user">
+                <div class="user-avatar" id="userAvatar">?</div>
+                <span class="user-name" id="userDisplayName"></span>
+                <button class="btn-signout" onclick="window._auth.signOut()">Sign out</button>
+            </div>
+        </header>
+
+        <style>
+            .header__title-grp { display: flex; flex-direction: column; }
+            .header__status { font-size: 0.7rem; color: var(--accent-green); display: flex; align-items: center; gap: 0.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+            .pulse-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green-glow); animation: pulse 2s infinite; }
+            @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        </style>
+
+        <!-- Error Banner -->
+        <div class="error-banner" id="errorBanner">
+            <span>⚠️</span>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Search Section -->
+        <section class="search-section animate-in" style="animation-delay:0.1s">
+            <form class="search-form" id="analyzeForm">
+                <div class="search-input-group">
+                    <span class="search-input-group__icon">🔍</span>
+                    <input type="text" class="search-input" id="channelUrl"
+                        placeholder="Search Influencers (e.g. MMCrypto)..." required
+                        autocomplete="off">
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+                <div class="video-count-group" style="gap: 1.5rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <label for="maxVideos">Videos:</label>
+                        <input type="number" class="video-count-input" id="maxVideos" value="100" min="1" max="500">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.8rem;">
+                        <input type="checkbox" id="forceFresh" style="accent-color:var(--accent-orange)">
+                        <label for="forceFresh" style="cursor:pointer">Force Fresh (Ignore Cache)</label>
+                    </div>
+                </div>
+                <div class="analyze-actions">
+                    <button type="button" class="btn-analyze" id="analyzeBtn" onclick="startAnalysis('bitcoin')">
+                        <span id="btnText">Analyze Bitcoin</span>
+                        <div class="spinner" id="btnSpinner" style="display:none"></div>
+                    </button>
+                    <button type="button" class="btn-analyze btn-analyze--stocks" id="analyzeStocksBtn" onclick="startAnalysis('stocks')">
+                        <span id="btnStocksText">Analyze Stocks</span>
+                        <div class="spinner" id="btnStocksSpinner" style="display:none"></div>
+                    </button>
+                    <button type="button" class="btn-analyze" onclick="clearAllCache()" style="background:#1e2430; font-size: 0.85rem; padding: 0.9rem 1.25rem;">
+                        🗑️ Reset Everything
+                    </button>
+                </div>
+            </form>
+            <style>
+                .analyze-actions {
+                    display: flex;
+                    gap: 1rem;
+                }
+                .btn-analyze--stocks {
+                    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+                    box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
+                }
+                .btn-analyze--stocks:hover {
+                    box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+                    transform: translateY(-2px);
+                }
+            </style>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="progress-section" id="progressSection">
+            <div class="progress-card">
+                <div class="progress-info">
+                    <h3 id="progressTitle">Analyzing Channel...</h3>
+                    <p class="progress-detail" id="progressDetail">Initializing...</p>
+                </div>
+                <div class="progress-stages">
+                    <div class="progress-stage" id="stage-collecting"></div>
+                    <div class="progress-stage" id="stage-transcripts"></div>
+                    <div class="progress-stage" id="stage-ai_extraction"></div>
+                    <div class="progress-stage" id="stage-market_data"></div>
+                    <div class="progress-stage" id="stage-evaluation"></div>
+                </div>
+                <div class="progress-labels">
+                    <span class="progress-label" id="label-collecting">Videos</span>
+                    <span class="progress-label" id="label-transcripts">Transcripts</span>
+                    <span class="progress-label" id="label-ai_extraction">AI Extraction</span>
+                    <span class="progress-label" id="label-market_data">Market</span>
+                    <span class="progress-label" id="label-evaluation">Evaluation</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Main Grid -->
+        <div id="mainDashboard" style="display:none">
+        
+        <!-- Influencer Highlights -->
+        <div id="influencerPanel" class="results-section" style="margin-bottom: 2rem;">
+            <div class="influencer-card">
+                <div class="influencer-card__header">
+                    <div class="influencer-avatar" id="infAvatar">?</div>
+                    <div>
+                        <h2 class="influencer-name" id="infName">Influencer Name</h2>
+                        <div class="influencer-badge" id="infBadge">Risky</div>
+                    </div>
+                </div>
+                <div class="influencer-stats">
+                    <div class="inf-stat">
+                        <span class="inf-stat__label">Call Rate</span>
+                        <span class="inf-stat__value" id="infCallRate">0.0/vid</span>
+                    </div>
+                    <div class="inf-stat">
+                        <span class="inf-stat__label">Historical Bias</span>
+                        <span class="inf-stat__value" id="infBias">Neutral</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid results-section">
+            <main class="dashboard-main">
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card stat-card--predictions" title="Total videos indexed and analyzed for this influencer">
+                        <div class="stat-card__icon">📹</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Videos Analyzed</div>
+                            <div class="stat-card__value" id="statVideos">0</div>
+                            <div class="stat-card__sub"><span id="statPredictions">0</span> predictions</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card--accuracy stat-card--dominant" title="Percentage of predictions that reached their target vs failed">
+                        <div class="stat-card__icon">🎯</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Hit Rate Accuracy</div>
+                            <div class="stat-card__value" id="statAccuracy">0%</div>
+                            <div class="stat-card__trend" id="statAccuracyTrend">--</div>
+                        </div>
+                        <div class="accuracy-ring" id="accuracyRing">
+                            <svg viewBox="0 0 36 36">
+                                <circle class="accuracy-ring__bg" cx="18" cy="18" r="15.5" />
+                                <circle class="accuracy-ring__fill" id="ringFill" cx="18" cy="18" r="15.5" stroke-dasharray="97.4" stroke-dashoffset="97.4" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card--correct" title="Number of predictions that successfully hit the target price">
+                        <div class="stat-card__icon">✅</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Correct</div>
+                            <div class="stat-card__value" id="statCorrect">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card--wrong" title="Number of predictions that hit the invalidation/stop-loss price">
+                        <div class="stat-card__icon">❌</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Wrong</div>
+                            <div class="stat-card__value" id="statWrong">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card--ongoing" title="Predictions that are currently active and tracking market price">
+                        <div class="stat-card__icon">⏳</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Ongoing</div>
+                            <div class="stat-card__value" id="statOngoing">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card--time" title="Total time taken to complete the AI analysis">
+                        <div class="stat-card__icon">⏱️</div>
+                        <div class="stat-card__content">
+                            <div class="stat-card__label">Processing</div>
+                            <div class="stat-card__value" style="font-size: 1.5rem;" id="statTimeDisplay">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Feed Section -->
+                <div class="feed-section">
+                    <div class="section-header">
+                        <h3>🔥 Latest Predictions Feed</h3>
+                        <span class="tag">Live Updates</span>
+                    </div>
+                    <div class="prediction-feed" id="predictionFeed">
+                        <!-- Feed items here -->
+                    </div>
+                </div>
+
+                <!-- Predictions Table -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <div class="table-title">
+                            <h3>📊 Full Prediction Archive</h3>
+                            <div class="table-search">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="tableSearch" placeholder="Filter by coin or title...">
+                            </div>
+                        </div>
+                        <div class="table-filters">
+                            <button class="filter-btn active" data-filter="all" id="filterAll">All</button>
+                            <button class="filter-btn" data-filter="CORRECT" id="filterCorrect">Correct</button>
+                            <button class="filter-btn" data-filter="WRONG" id="filterWrong">Wrong</button>
+                            <button class="filter-btn" data-filter="ONGOING" id="filterOngoing">Ongoing</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="predictionTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">Date ⇅</th>
+                                    <th onclick="sortTable(1)">Asset ⇅</th>
+                                    <th>Direction</th>
+                                    <th>Confidence</th>
+                                    <th>Timeframe</th>
+                                    <th>Entry Price</th>
+                                    <th>Current</th>
+                                    <th onclick="sortTable(7)">Status ⇅</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="predictionsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span id="analysisStatus">Analysis complete</span>
+                        <span class="small-text" id="statTime">Took 0s</span>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="dashboard-sidebar">
+                <!-- Live Tracker -->
+                <div class="side-widget">
+                    <h4>📡 Live Tracking</h4>
+                    <div class="tracker-list" id="liveTracker">
+                        <div class="empty-state">No active predictions</div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="side-widget">
+                    <h4>🏆 Top Performers</h4>
+                    <div class="leaderboard-list" id="leaderboard">
+                        <div class="user-row">
+                            <span class="rank">#1</span>
+                            <span class="name">Analyzing...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="engagement-buttons">
+                    <button class="btn-engage" id="btnFollow"><span class="icon">➕</span> Follow Influencer</button>
+                    <button class="btn-engage" id="btnSave"><span class="icon">💾</span> Save Report</button>
+                    <button class="btn-engage" id="btnShare"><span class="icon">🔗</span> Share Stats</button>
+                </div>
+            </aside>
+        </div><!-- /#mainDashboard -->
+        </div>
+
+        <!-- Followed Influencers Quick Access -->
+        <section id="followedInfluencersSection" style="display:none; margin-bottom: 2rem;" class="animate-in">
+            <div class="section-header">
+                <h3>⭐ My Followed Influencers</h3>
+                <span class="small-text">Quick Access</span>
+            </div>
+            <div id="followedInfluencersList" class="followed-grid">
+                <!-- Followed cards here -->
+            </div>
+        </section>
+
+        <style>
+            .followed-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1.25rem;
+            }
+            .followed-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                cursor: pointer;
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+            .followed-card:hover {
+                border-color: var(--accent-orange);
+                transform: translateY(-3px);
+                background: var(--bg-card-hover);
+            }
+            .followed-card__avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--accent-orange);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 800;
+                font-size: 1rem;
+                flex-shrink: 0;
+            }
+            .followed-card__info {
+                flex: 1;
+                min-width: 0;
+            }
+            .followed-card__name {
+                font-weight: 700;
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .followed-card__meta {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+            }
+            .unfollow-btn {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: rgba(244, 63, 94, 0.1);
+                color: var(--accent-red);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                opacity: 0;
+                transition: opacity 0.2s;
+                border: none;
+                cursor: pointer;
+            }
+            .followed-card:hover .unfollow-btn {
+                opacity: 1;
+            }
+        </style>
+
+        <!-- Empty State -->
+        <section class="empty-state animate-in" id="emptyState" style="animation-delay: 0.3s;">
+            <div class="empty-state-card">
+                <div class="empty-state__icon">📊</div>
+                <div class="empty-state__title">Ready for Alpha Extraction</div>
+                <div class="empty-state__desc">Paste a YouTube channel link or search for an influencer above to generate a real-time credibility report and prediction analysis.</div>
+                <div class="empty-state__hint">Supported assets: Bitcoin & NASDAQ Stocks</div>
+            </div>
+        </section>
+
+        <style>
+            .empty-state-card {
+                background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+                border: 1px solid var(--border);
+                border-radius: var(--radius-xl);
+                padding: 4rem 2rem;
+                max-width: 600px;
+                margin: 0 auto;
+                box-shadow: var(--shadow-lg);
+            }
+            .empty-state__hint {
+                margin-top: 1.5rem;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            /* Toast Notification */
+            .toast {
+                position: fixed;
+                bottom: 2.5rem;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                padding: 0.75rem 1.5rem;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                pointer-events: none;
+            }
+
+            .toast.visible {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            .toast__icon { font-size: 1.25rem; }
+            .toast__msg { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); }
+        </style>
+
+        </footer>
+
+        <p style="text-align:center; font-size: 0.65rem; color: var(--text-muted); margin-top: -1rem; opacity: 0.4;">
+            Predictor Analytics Platform v2.1.2 (Dashboard Ready)
+        </p>
+
+    </div><!-- /.app-container -->
+    </div><!-- /#mainApp -->
+
+    <div id="toast" class="toast">
+        <span class="toast__icon" id="toastIcon">✅</span>
+        <span class="toast__msg" id="toastMsg">Action successful</span>
+    </div>
+
+    <script>
+        let allPredictions = [];
+        const STAGES = ['collecting', 'transcripts', 'ai_extraction', 'market_data', 'evaluation'];
+
+        // ── Toast Logic ──
+        function showToast(msg, icon = '✅') {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 3000);
+        }
+
+        // ── Engagement Handlers ──────────────────────────────────────────────
+        document.getElementById('btnFollow').onclick = () => {
+            const name = document.getElementById('infName').textContent;
+            const url = channelInput.value.trim();
+            let follows = JSON.parse(localStorage.getItem('followed_influencers') || '[]');
+            
+            const existingIdx = follows.findIndex(f => typeof f === 'object' ? f.name === name : f === name);
+            if (existingIdx !== -1) {
+                follows.splice(existingIdx, 1);
+                document.getElementById('btnFollow').innerHTML = `<span class="icon">➕</span> Follow Influencer`;
+                showToast(`Unfollowed ${name}`, '👤');
+            } else {
+                follows.push({ name, url, date: new Date().toLocaleDateString() });
+                document.getElementById('btnFollow').innerHTML = `<span class="icon">⭐</span> Following`;
+                showToast(`Following ${name}`, '⭐');
+            }
+            localStorage.setItem('followed_influencers', JSON.stringify(follows));
+            renderFollowedList();
+        };
+
+        function renderFollowedList() {
+            const container = document.getElementById('followedInfluencersSection');
+            const list = document.getElementById('followedInfluencersList');
+            const follows = JSON.parse(localStorage.getItem('followed_influencers') || '[]');
+            
+            if (follows.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            list.innerHTML = '';
+            
+            follows.forEach(f => {
+                const info = typeof f === 'object' ? f : { name: f, url: '', date: '' };
+                const card = document.createElement('div');
+                card.className = 'followed-card animate-in';
+                card.onclick = () => {
+                    channelInput.value = info.url || info.name;
+                    startAnalysis('bitcoin');
+                };
+                
+                card.innerHTML = `
+                    <div class="followed-card__avatar">${info.name[0].toUpperCase()}</div>
+                    <div class="followed-card__info">
+                        <div class="followed-card__name">${info.name}</div>
+                        <div class="followed-card__meta">${info.date || 'Influencer'}</div>
+                    </div>
+                    <button class="unfollow-btn" title="Unfollow" onclick="event.stopPropagation(); unfollow('${info.name}')">×</button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        window.unfollow = (name) => {
+            let follows = JSON.parse(localStorage.getItem('followed_influencers') || '[]');
+            follows = follows.filter(f => (typeof f === 'object' ? f.name : f) !== name);
+            localStorage.setItem('followed_influencers', JSON.stringify(follows));
+            renderFollowedList();
+            
+            // Update the button if we're currently looking at this influencer
+            if (document.getElementById('infName').textContent === name) {
+                document.getElementById('btnFollow').innerHTML = `<span class="icon">➕</span> Follow Influencer`;
+            }
+        };
+
+        document.getElementById('btnSave').onclick = () => {
+            if (allPredictions.length === 0) return showToast('No data to save', '❌');
+            const name = document.getElementById('infName').textContent;
+            const csv = convertToCSV(allPredictions);
+            downloadCSV(csv, `report_${name.replace(/\s+/g, '_')}.csv`);
+            showToast('Report downloaded as CSV (Excel Friendly)', '📊');
+        };
+
+        function convertToCSV(data) {
+            const headers = ["Date", "Asset", "Direction", "Confidence", "Timeframe", "Entry Price", "Target Price", "Current Price", "Status", "Reasoning"];
+            const rows = data.map(p => [
+                p.publish_date,
+                p.coin || p.asset,
+                p.direction,
+                `${Math.round((p.confidence || 0) * 100)}%`,
+                p.timeframe,
+                p.price_at_prediction,
+                p.target_price || "N/A",
+                p.current_price || "N/A",
+                p.status,
+                `"${(p.sentence || p.proof_quote || "").replace(/"/g, '""')}"`
+            ]);
+            
+            return [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('btnShare').onclick = () => {
+            const name = document.getElementById('infName').textContent;
+            const acc = document.getElementById('statAccuracy').textContent;
+            const text = `Check out this Alpha Report for ${name}!\nTarget Accuracy: ${acc}\nAnalyzed with Predictor AI.`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Report summary copied to clipboard!', '🔗');
+            });
+        };
+
+        // ── Channel Search Logic ──────────────────────────────────────────
+        const channelInput = document.getElementById('channelUrl');
+        const searchResults = document.getElementById('searchResults');
+        const maxVidInput = document.getElementById('maxVideos');
+        const resultsSec = document.getElementById('mainDashboard');
+        const progressSec = document.getElementById('progressSection');
+        const progressDet = document.getElementById('progressDetail');
+        const emptyState = document.getElementById('emptyState');
+        const errorBanner = document.getElementById('errorBanner');
+        const errorText = document.getElementById('errorText');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeStocksBtn = document.getElementById('analyzeStocksBtn');
+        const btnText = document.getElementById('btnText');
+        const btnStocksText = document.getElementById('btnStocksText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnStocksSpinner = document.getElementById('btnStocksSpinner');
+        const tbody = document.getElementById('predictionsBody');
+        
+        let searchTimeout = null;
+        let currentMarket = 'bitcoin';
+
+        // ── Auto-Restoration ──
+        window.addEventListener('load', () => {
+            // Disabled auto-restoration to prevent confusion with "old data"
+            // showRecentHistory();
+        });
+
+        channelInput.addEventListener('focus', () => {
+            if (channelInput.value.trim().length === 0) {
+                showRecentHistory();
+            }
+        });
+
+        function showRecentHistory() {
+            const history = JSON.parse(localStorage.getItem('search_history') || '[]');
+            if (history.length === 0) return;
+            
+            searchResults.innerHTML = '<div style="padding:0.5rem 1rem; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Recent Searches</div>';
+            history.forEach(query => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.innerHTML = `
+                    <div class="search-result-item__icon">🕒</div>
+                    <div class="search-result-item__content">
+                        <div class="search-result-item__name">${query}</div>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    channelInput.value = query;
+                    searchResults.classList.remove('active');
+                    startAnalysis('bitcoin'); // Default to bitcoin for history clicks
+                });
+                searchResults.appendChild(item);
+            });
+            searchResults.classList.add('active');
+        }
+
+        channelInput.addEventListener('input', () => {
+            const query = channelInput.value.trim();
+            
+            // Clear previous results
+            searchResults.innerHTML = '';
+            searchResults.classList.remove('active');
+            
+            if (searchTimeout) clearTimeout(searchTimeout);
+            
+            if (query.length === 0) {
+                showRecentHistory();
+                return;
+            }
+
+            searchResults.innerHTML = '<div style="padding:1.5rem; text-align:center; color:var(--text-muted);"><div class="spinner" style="display:inline-block; vertical-align:middle; margin-right:8px; border:2px solid rgba(255,255,255,0.1); border-top-color:var(--accent-orange); width:16px; height:16px; border-radius:50%; animation:spin 0.6s linear infinite;"></div> Searching for channels...</div>';
+            searchResults.classList.add('active');
+
+            // If we have a cache for this, let the user know? 
+            // Or just wait for them to press enter/button
+            
+            // If it looks like a URL, don't search YouTube API
+            if (query.startsWith('http') || query.includes('youtube.com/') || query.includes('youtu.be/')) {
+                return;
+            }
+
+            if (query.length < 2) return;
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const response = await fetch('/api/search-channel', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query })
+                    });
+                    const data = await response.json();
+                    
+                    if (data.results && data.results.length > 0) {
+                        renderSearchResults(data.results);
+                    }
+                } catch (err) {
+                    console.error('Search error:', err);
+                }
+            }, 500); // 500ms debounce
+        });
+
+        function renderSearchResults(results) {
+            searchResults.innerHTML = '';
+            results.forEach(res => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.innerHTML = `
+                    <div class="search-result-item__icon">👤</div>
+                    <div class="search-result-item__content">
+                        <div class="search-result-item__name">${res.name}</div>
+                        <div class="search-result-item__url">${res.url}</div>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    channelInput.value = res.url;
+                    searchResults.classList.remove('active');
+                });
+                searchResults.appendChild(item);
+            });
+            searchResults.classList.add('active');
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!channelInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // ── Form Submit ──────────────────────────────────────────────────
+        document.getElementById('analyzeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            startAnalysis('bitcoin');
+        });
+
+        // ── Start Analysis ───────────────────────────────────────────────
+        function startAnalysis(market = 'bitcoin') {
+            currentMarket = market;
+            const channelUrl = channelInput.value.trim();
+            const maxVideos = parseInt(maxVidInput.value) || 100;
+
+            if (!channelUrl) {
+                showError('Please enter a YouTuber name or channel URL');
+                return;
+            }
+
+            // Reset UI
+            hideError();
+            if (emptyState) emptyState.style.display = 'none';
+            resultsSec.style.display = 'none'; 
+            resultsSec.classList.remove('active');
+            progressSec.classList.add('active');
+            setLoading(true, market);
+            resetProgress();
+            
+            // Update subtitle to reflect market
+            const subtitle = document.getElementById('headerSubtitle');
+            if (subtitle) {
+                subtitle.textContent = market === 'bitcoin' 
+                    ? 'Evaluate Bitcoin predictions from YouTube influencers against real market data'
+                    : 'Evaluate Stock Market predictions from YouTube influencers against real market data';
+            }
+
+            // ── CACHE CHECK ──
+            const force = document.getElementById('forceFresh').checked;
+            const cached = force ? null : localStorage.getItem('analysis_cache_' + channelUrl.toLowerCase());
+            if (cached) {
+                const cachedData = JSON.parse(cached);
+                console.log('Loading from cache:', channelUrl);
+                displayResults(cachedData);
+                setLoading(false);
+                progressSec.classList.remove('active');
+                return;
+            }
+
+            // WebSocket connection
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${location.host}/ws/analyze`;
+            
+            let ws;
+            try {
+                ws = new WebSocket(wsUrl);
+            } catch (e) {
+                console.error('WS Connection failed:', e);
+                showError('Connection failed. Please refresh.');
+                setLoading(false);
+                return;
+            }
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify({
+                    channel_url: channelUrl,
+                    max_videos: maxVideos,
+                    market: market
+                }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'progress') {
+                    updateProgress(data.stage, data.detail);
+                } else if (data.type === 'result') {
+                    // SAVE TO CACHE
+                    localStorage.setItem('analysis_cache_' + channelUrl.toLowerCase(), JSON.stringify(data.data));
+                    saveToHistory(channelUrl);
+                    
+                    displayResults(data.data);
+                    document.getElementById('analysisStatus').textContent = 'Analysis Complete';
+                    setLoading(false);
+                    ws.close();
+                } else if (data.type === 'error') {
+                    showError(data.detail || 'Analysis failed');
+                    setLoading(false);
+                    ws.close();
+                }
+            };
+
+            ws.onerror = (err) => {
+                console.error('WS Error:', err);
+                showError('Real-time connection error. Please try again.');
+                setLoading(false);
+            };
+
+            ws.onclose = () => {
+                if (!resultsSec.classList.contains('active') && !errorBanner.classList.contains('active')) {
+                    setLoading(false);
+                }
+            };
+        }
+
+        function saveToHistory(query) {
+            let history = JSON.parse(localStorage.getItem('search_history') || '[]');
+            if (!history.includes(query)) {
+                history.unshift(query);
+                if (history.length > 5) history.pop();
+                localStorage.setItem('search_history', JSON.stringify(history));
+            }
+        }
+
+        // ── Engagement Handlers ──────────────────────────────────────────────
+        function clearAllCache() {
+            if (confirm("This will clear all search history and locally cached results. Are you sure?")) {
+                localStorage.clear();
+                showToast("All local data has been wiped.");
+                setTimeout(() => location.reload(), 800);
+            }
+        }
+
+        function handleFollow() {
+            showToast("Feature coming soon!");
+        }
+
+        // ── REST Fallback ────────────────────────────────────────────────
+        async function fallbackToRest(channelUrl, maxVideos) {
+            try {
+                const resp = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ channel_url: channelUrl, max_videos: maxVideos }),
+                });
+
+                if (!resp.ok) {
+                    const err = await resp.json();
+                    throw new Error(err.detail || 'Analysis failed');
+                }
+
+                const data = await resp.json();
+                displayResults(data);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ── Progress Updates ─────────────────────────────────────────────
+        function resetProgress() {
+            STAGES.forEach(s => {
+                document.getElementById(`stage-${s}`).className = 'progress-stage';
+                document.getElementById(`label-${s}`).className = 'progress-label';
+            });
+            progressDet.textContent = 'Initializing...';
+        }
+
+        function updateProgress(stage, detail) {
+            const idx = STAGES.indexOf(stage);
+            if (idx === -1 && stage !== 'done') {
+                if (detail) progressDet.textContent = detail;
+                return;
+            }
+
+            if (stage === 'done') {
+                STAGES.forEach(s => {
+                    document.getElementById(`stage-${s}`).className = 'progress-stage completed';
+                    document.getElementById(`label-${s}`).className = 'progress-label completed';
+                });
+                progressDet.textContent = detail;
+                return;
+            }
+
+            // Mark previous stages as completed
+            for (let i = 0; i < idx; i++) {
+                document.getElementById(`stage-${STAGES[i]}`).className = 'progress-stage completed';
+                document.getElementById(`label-${STAGES[i]}`).className = 'progress-label completed';
+            }
+
+            // Mark current stage as active
+            document.getElementById(`stage-${stage}`).className = 'progress-stage active';
+            document.getElementById(`label-${stage}`).className = 'progress-label active';
+
+            progressDet.textContent = detail;
+        }
+
+        // ── Display Results ──────────────────────────────────────────────
+        function displayResults(data) {
+            allPredictions = data.predictions || [];
+
+            // Update Stats Display
+            document.getElementById('statVideos').textContent = data.videos_analyzed || 0;
+            document.getElementById('statPredictions').textContent = data.predictions_found || 0;
+            document.getElementById('statAccuracy').textContent = (data.accuracy_percentage || 0) + '%';
+            document.getElementById('statCorrect').textContent = data.correct || 0;
+            document.getElementById('statWrong').textContent = data.wrong || 0;
+            document.getElementById('statOngoing').textContent = data.ongoing || 0;
+            document.getElementById('statTime').textContent = 'Took ' + (data.processing_time || 0).toFixed(1) + 's';
+            document.getElementById('statTimeDisplay').textContent = (data.processing_time || 0).toFixed(0) + 's';
+
+            // Accuracy Ring
+            const ring = document.getElementById('ringFill');
+            if (ring) {
+                const pct = data.accuracy_percentage || 0;
+                const offset = 97.4 - (pct / 100) * 97.4;
+                ring.style.strokeDashoffset = offset;
+            }
+
+            // Trend
+            const trend = document.getElementById('statAccuracyTrend');
+            if (trend) {
+                const acc = data.accuracy_percentage || 0;
+                if (acc > 50) {
+                    trend.innerHTML = '↑ Above Avg';
+                    trend.className = 'stat-card__trend up';
+                } else {
+                    trend.innerHTML = '↓ Below Avg';
+                    trend.className = 'stat-card__trend down';
+                }
+            }
+
+            updateInfluencerHeader(data);
+            updateSidebar(data);
+            renderFeed();
+            renderTable('all');
+
+            resultsSec.style.display = 'block';
+            resultsSec.classList.add('active');
+            progressSec.classList.remove('active');
+        }
+
+        function updateInfluencerHeader(data) {
+            const panel = document.getElementById('influencerPanel');
+            panel.classList.add('active');
+            
+            // Extract channel name from pipeline or fallback to first prediction
+            let name = data.influencer_name;
+            if (!name || name === "Channel_Analysis") {
+                name = allPredictions.length > 0 ? (allPredictions[0].channel_name || "Target Influencer") : "Influencer";
+            }
+            document.getElementById('infName').textContent = name;
+            
+            // Use unavatar.io to fetch the YouTube profile picture
+            const avatarDiv = document.getElementById('infAvatar');
+            let handle = name;
+            if (name.includes('youtube.com/')) {
+                handle = name.split('/').pop();
+            }
+            const cleanHandle = handle.replace('@', '').replace(/\s+/g, '').trim();
+            avatarDiv.style.padding = '0';
+            avatarDiv.style.overflow = 'hidden';
+            avatarDiv.innerHTML = `<img src="https://unavatar.io/youtube/${encodeURIComponent(cleanHandle)}" onerror="this.src='https://unavatar.io/github/identicon'" alt="${name}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            
+            const badge = document.getElementById('infBadge');
+            const acc = data.accuracy_percentage || 0;
+            if (acc > 70) {
+                badge.textContent = "Trusted Alpha";
+                badge.className = "influencer-badge badge--correct";
+            } else if (acc > 40) {
+                badge.textContent = "Neutral Signal";
+                badge.className = "influencer-badge badge--ongoing";
+            } else {
+                badge.textContent = "Risky Signal";
+                badge.className = "influencer-badge badge--wrong";
+            }
+
+            const predCount = data.predictions_found || 0;
+            const vidCount = data.videos_analyzed || 1;
+            document.getElementById('infCallRate').textContent = (predCount / vidCount).toFixed(1) + " calls/vid";
+            
+            // Bias detection
+            const ups = allPredictions.filter(p => p.direction === 'UP').length;
+            const downs = allPredictions.filter(p => p.direction === 'DOWN').length;
+            const bias = ups > downs * 1.5 ? "Permabull" : (downs > ups * 1.5 ? "Permabear" : "Balanced");
+            document.getElementById('infBias').textContent = bias;
+        }
+
+        function updateSidebar(data) {
+            // Live Tracker
+            const tracker = document.getElementById('liveTracker');
+            tracker.innerHTML = '';
+            
+            const active = allPredictions.filter(p => p.status === 'ONGOING').slice(0, 5);
+            if (active.length === 0) {
+                tracker.innerHTML = '<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center;">No ongoing predictions</div>';
+                return;
+            }
+            if (active.length > 0) {
+                tracker.innerHTML = '';
+                active.forEach(p => {
+                    const pct = calculateProgress(p);
+                    const row = document.createElement('div');
+                    row.className = 'tracker-item';
+                    row.innerHTML = `
+                        <div class="tracker-item__info">
+                            <span>${p.coin}</span>
+                            <span>${pct.toFixed(0)}% to goal</span>
+                        </div>
+                        <div class="mini-progress"><div class="mini-progress-bar" style="width:${pct}%"></div></div>
+                    `;
+                    tracker.appendChild(row);
+                });
+            }
+
+            // Leaderboard (Mock Top for current analysis)
+            const lb = document.getElementById('leaderboard');
+            const name = allPredictions.length > 0 ? (allPredictions[0].channel_name || "Target Influencer") : "Influencer";
+            lb.innerHTML = `
+                <div class="user-row active">
+                    <span class="rank">#1</span>
+                    <span class="name">${name}</span>
+                    <span class="score">${data.accuracy_percentage}%</span>
+                </div>
+            `;
+        }
+
+        // ── Render Feed ──────────────────────────────────────────────────
+        function renderFeed() {
+            const feed = document.getElementById('predictionFeed');
+            const recent = allPredictions.filter(p => p.coin).slice(0, 4); 
+            feed.innerHTML = '';
+
+            if (recent.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No predictions found in these videos.</div>';
+                return;
+            }
+
+            recent.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'feed-card animate-in';
+                
+                const pct = calculateProgress(p);
+                const statusBadge = p.status === 'CORRECT' ? '<span class="badge badge--correct">Hit Target</span>' 
+                                 : p.status === 'WRONG' ? '<span class="badge badge--wrong">Failed</span>'
+                                 : '<span class="badge badge--ongoing">Ongoing</span>';
+
+                const influencer = p.channel_name || document.getElementById('infName').textContent;
+                const target = p.target_price || (p.price_at_prediction * (p.direction === 'UP' ? 1.1 : 0.9));
+                
+                card.innerHTML = `
+                    <div class="feed-card__top">
+                        <div class="feed-coin" style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">${influencer}</div>
+                        ${statusBadge}
+                    </div>
+                    <div class="feed-prediction" style="margin-bottom:0.25rem; font-size:1.1rem;">
+                        <span style="color:var(--text-secondary); font-size: 0.9rem;">Target:</span> ${formatPrice(target)}
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-primary); margin-bottom:0.75rem;">
+                        <span style="color:var(--text-secondary);">Current:</span> <strong>${formatPrice(p.current_price || p.price_at_prediction)}</strong>
+                    </div>
+                    <div class="feed-progress" style="margin-bottom: 0.5rem;">
+                        <div class="feed-progress-bar" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="feed-meta" style="justify-content: space-between;">
+                        <span>Call: ${p.direction} from ${formatPrice(p.price_at_prediction)}</span>
+                        <span>${p.publish_date}</span>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        function calculateProgress(p) {
+            if (p.status === 'CORRECT') return 100;
+            if (p.status === 'WRONG') return 100;
+            const start = p.price_at_prediction || 0;
+            const curr = p.current_price || start;
+            if (start === 0) return 0;
+            const diff = Math.abs(curr - start);
+            const goal = start * 0.01; // 1% goal
+            return Math.min(100, (diff / goal) * 100);
+        }
+
+        // ── Render Table ─────────────────────────────────────────────────
+        function renderTable(filter, search = '') {
+            let filtered = filter === 'all'
+                ? allPredictions
+                : allPredictions.filter(p => p.status === filter);
+
+            if (search) {
+                const s = search.toLowerCase();
+                filtered = filtered.filter(p => 
+                    (p.video_title || '').toLowerCase().includes(s) || 
+                    (p.coin || p.asset || '').toLowerCase().includes(s)
+                );
+            }
+
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:3rem; color:var(--text-muted);">No predictions match your filters.</td></tr>';
+                return;
+            }
+
+            filtered.forEach((p, i) => {
+                const row = document.createElement('tr');
+                row.className = 'prediction-row';
+                row.style.cursor = 'pointer';
+                row.onclick = () => showDetail(i);
+
+                const moveAmount = Math.abs((p.highest_after - p.price_at_prediction)/p.price_at_prediction);
+                if (moveAmount > 0.05) {
+                    row.classList.add('major-move');
+                }
+
+                const statusClass = (p.status || 'ongoing').toLowerCase();
+                const dirClass = (p.direction || '').toUpperCase() === 'UP' ? 'up' : 'down';
+                const current = p.current_price || p.price_at_prediction;
+
+                row.innerHTML = `
+                <td>${p.publish_date}</td>
+                <td style="font-weight:700; color:var(--text-primary);">${p.coin || p.asset}</td>
+                <td><span class="td-direction ${dirClass}">${p.direction}</span></td>
+                <td style="font-family:var(--font-mono);">${Math.round((p.confidence || 0) * 100)}%</td>
+                <td>${formatTimeframe(p.timeframe)}</td>
+                <td style="font-family:var(--font-mono);">${formatPrice(p.price_at_prediction)}</td>
+                <td style="font-family:var(--font-mono); color:var(--text-primary);">${formatPrice(current)}</td>
+                <td><span class="badge badge--${statusClass}">${p.status}</span></td>
+                <td><button class="btn-view">Details</button></td>
+            `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        const tableSearch = document.getElementById('tableSearch');
+        tableSearch.addEventListener('input', () => {
+            const filter = document.querySelector('.filter-btn.active').dataset.filter;
+            renderTable(filter, tableSearch.value);
+        });
+
+        function showDetail(idx) {
+            const p = allPredictions[idx];
+            alert(`Prediction Detail:\n\nVideo: ${p.video_title}\nQuote: "${p.sentence || p.proof_quote}"\n\nEntry: ${formatPrice(p.price_at_prediction)}\nHigh Since: ${formatPrice(p.highest_after)}\nLow Since: ${formatPrice(p.lowest_after)}\nStatus: ${p.status}`);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────
+        function setLoading(loading, market = 'bitcoin') {
+            const btcBtn = document.getElementById('analyzeBtn');
+            const stocksBtn = document.getElementById('analyzeStocksBtn');
+            const btcSpinner = document.getElementById('btnSpinner');
+            const stocksSpinner = document.getElementById('btnStocksSpinner');
+            const btcText = document.getElementById('btnText');
+            const stocksText = document.getElementById('btnStocksText');
+
+            btcBtn.disabled = loading;
+            stocksBtn.disabled = loading;
+
+            if (market === 'bitcoin') {
+                btcText.textContent = loading ? 'Analyzing...' : 'Analyze Bitcoin';
+                btcSpinner.style.display = loading ? 'block' : 'none';
+                if (!loading) stocksText.textContent = 'Analyze Stocks';
+            } else {
+                stocksText.textContent = loading ? 'Analyzing...' : 'Analyze Stocks';
+                stocksSpinner.style.display = loading ? 'block' : 'none';
+                if (!loading) btcText.textContent = 'Analyze Bitcoin';
+            }
+        }
+
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorBanner.classList.add('active');
+        }
+
+        function hideError() {
+            errorBanner.classList.remove('active');
+        }
+
+        function formatPrice(val) {
+            if (val == null || val === undefined || val === 0) return '—';
+            // Stocks need decimals, BTC doesn't
+            const decimals = val < 500 ? 2 : 0;
+            return '$' + Number(val).toLocaleString('en-US', { 
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals 
+            });
+        }
+
+        function formatTimeframe(tf) {
+            if (!tf) return 'Short';
+            const t = tf.toLowerCase();
+            if (t.includes('ultra') || t.includes('very_short')) return 'Ultra Short';
+            if (t.includes('long_term')) return 'Long';
+            if (t.includes('medium_term') || t.includes('mid_term')) return 'Medium';
+            if (t.includes('short_term')) return 'Short';
+            
+            // Fallback for messy AI outputs
+            if (t.includes('macro') || t.includes('month')) return 'Long';
+            if (t.includes('week')) return 'Short';
+            if (t.includes('day')) return 'Ultra Short';
+            
+            return 'Short';
+        }
+
+        function truncate(str, len) {
+            return str.length > len ? str.slice(0, len) + '…' : str;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ── Auth helpers ─────────────────────────────────────────────────
+        let isSignUpMode = false;
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            const card = document.getElementById('authCard');
+            const toggle = document.getElementById('authToggleText');
+            const btnLabel = document.getElementById('authBtnLabel');
+            const pwInput = document.getElementById('authPassword');
+
+            if (isSignUpMode) {
+                card.classList.add('signup-mode');
+                toggle.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>';
+                btnLabel.textContent = 'Create Account';
+                pwInput.setAttribute('autocomplete', 'new-password');
+                pwInput.setAttribute('placeholder', 'Min. 6 characters');
+            } else {
+                card.classList.remove('signup-mode');
+                toggle.innerHTML = "Don't have an account? <a onclick=\"toggleAuthMode()\">Sign up</a>";
+                btnLabel.textContent = 'Sign In';
+                pwInput.setAttribute('autocomplete', 'current-password');
+                pwInput.setAttribute('placeholder', '••••••••');
+            }
+            clearAuthError();
+        }
+
+        function showAuthError(msg) {
+            const el = document.getElementById('authError');
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function clearAuthError() {
+            document.getElementById('authError').classList.remove('show');
+        }
+
+        function setAuthLoading(loading) {
+            document.getElementById('btnAuthSubmit').disabled = loading;
+            document.getElementById('btnGoogle').disabled = loading;
+            document.getElementById('authBtnLabel').textContent =
+                loading ? 'Please wait…' : (isSignUpMode ? 'Create Account' : 'Sign In');
+        }
+
+        let isVerifying = false;
+        let pendingUser = null;
+
+        async function triggerVerification(user) {
+            isVerifying = true;
+            pendingUser = user;
+            
+            // Basic UI switch
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('verifyOverlay').style.display = 'flex';
+            document.getElementById('verifySentTo').textContent = `We sent a 6-digit code to ${user.email}. Please enter it below.`;
+            
+            try {
+                const resp = await fetch('/api/auth/send-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email })
+                });
+                
+                if (resp.ok) {
+                    showToast('Code sent to your email', '📧');
+                } else {
+                    const err = await resp.json();
+                    showToast(err.detail || 'Email failed to send', '❌');
+                    console.error('Auth code error:', err);
+                }
+            } catch (err) {
+                console.error('Verification trigger error:', err);
+                showToast('Failed to connect to auth server', '❌');
+            }
+        }
+
+        async function finalizeVerification() {
+            const codeInput = document.getElementById('otpCode');
+            const code = codeInput.value.trim();
+            if (code.length < 6) return showToast('Enter 6 digits', '⚠️');
+
+            setAuthLoading(true); // Re-use the loading state logic if possible or just disable locally
+            const btn = document.getElementById('btnVerifyCode');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+
+            try {
+                const resp = await fetch('/api/auth/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingUser.email, code })
+                });
+                
+                if (resp.ok) {
+                    isVerifying = false;
+                    document.getElementById('verifyOverlay').style.display = 'none';
+                    showMainApp(pendingUser);
+                    showToast('Identity Verified!', '✅');
+                } else {
+                    const err = await resp.json();
+                    showToast(err.detail || 'Invalid code', '❌');
+                    codeInput.value = '';
+                    codeInput.focus();
+                }
+            } catch (err) {
+                console.error('Verification final error:', err);
+                showToast('Network error, try again.', '❌');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        async function resendCode() {
+            if (!pendingUser) return;
+            await triggerVerification(pendingUser);
+        }
+
+        function showMainApp(user) {
+            // Hide all potential covers
+            const lp = document.getElementById('landingPage');
+            if (lp) lp.style.display = 'none';
+            
+            const authOverlay = document.getElementById('authOverlay');
+            if (authOverlay) authOverlay.style.display = 'none';
+            
+            const verifyOverlay = document.getElementById('verifyOverlay');
+            if (verifyOverlay) verifyOverlay.style.display = 'none';
+
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('userAvatar').textContent =
+                (user.displayName || user.email || '?')[0].toUpperCase();
+            document.getElementById('userDisplayName').textContent =
+                user.displayName || user.email;
+            renderFollowedList();
+        }
+
+        async function handleGoogleSignIn() {
+            clearAuthError();
+            setAuthLoading(true);
+            try {
+                const cred = await window._auth.signInWithGoogle();
+                // Google users are already verified by Google
+                showMainApp(cred.user); 
+                showToast('Signed in with Google', '✅');
+            } catch (err) {
+                showAuthError(friendlyAuthError(err.code));
+            } finally {
+                setAuthLoading(false);
+            }
+        }
+
+        async function handleEmailAuth(e) {
+            e.preventDefault();
+            clearAuthError();
+            const email = document.getElementById('authEmail').value.trim();
+            const pw    = document.getElementById('authPassword').value;
+            const name  = document.getElementById('authName').value.trim();
+
+            if (!email || !pw) return;
+            if (isSignUpMode && pw.length < 6) {
+                showAuthError('Password must be at least 6 characters.');
+                return;
+            }
+
+            setAuthLoading(true);
+            try {
+                let user;
+                if (isSignUpMode) {
+                    const cred = await window._auth.signUpEmail(email, pw, name);
+                    user = cred.user;
+                } else {
+                    const cred = await window._auth.signInEmail(email, pw);
+                    user = cred.user;
+                }
+                triggerVerification(user);
+            } catch (err) {
+                showAuthError(friendlyAuthError(err.code));
+            } finally {
+                setAuthLoading(false);
+            }
+        }
+
+        function togglePassword() {
+            const inp = document.getElementById('authPassword');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+
+        function friendlyAuthError(code) {
+            const map = {
+                'auth/wrong-password':          'Incorrect password. Please try again.',
+                'auth/user-not-found':           'No account found with this email.',
+                'auth/email-already-in-use':     'An account with this email already exists.',
+                'auth/invalid-email':            'Please enter a valid email address.',
+                'auth/weak-password':            'Password must be at least 6 characters.',
+                'auth/popup-closed-by-user':     'Google sign-in was cancelled.',
+                'auth/network-request-failed':   'Network error. Please check your connection.',
+                'auth/too-many-requests':        'Too many attempts. Please try again later.',
+                'auth/invalid-credential':       'Incorrect email or password.',
+            };
+            return map[code] || 'Authentication failed. Please try again.';
+        }
+
+        // ── Landing Page JS ──────────────────────────────────────────────
+
+        function showAuth() {
+            const lp = document.getElementById('landingPage');
+            lp.style.transition = 'opacity .5s ease, transform .5s ease';
+            lp.style.opacity = '0';
+            lp.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                lp.style.display = 'none';
+
+                if (isVerifying) {
+                    document.getElementById('verifyOverlay').style.display = 'flex';
+                } else if (_currentUser) {
+                    showMainApp(_currentUser);
+                } else {
+                    document.getElementById('authOverlay').style.display = 'flex';
+                }
+            }, 480);
+        }
+
+        // Scroll reveal
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    revealObserver.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.lp-reveal').forEach(el => revealObserver.observe(el));
+
+        // Nav shrink on scroll
+        const lpNav = document.getElementById('lpNav');
+        const lpScroll = document.getElementById('landingPage');
+        if (lpScroll) {
+            lpScroll.addEventListener('scroll', () => {
+                if (lpScroll.scrollTop > 60) {
+                    lpNav.style.padding = '.75rem 3rem';
+                    lpNav.style.background = 'rgba(0,0,0,0.85)';
+                } else {
+                    lpNav.style.padding = '1.25rem 3rem';
+                    lpNav.style.background = 'rgba(0,0,0,0.6)';
+                }
+            });
+        }
+
+        // Animated counters
+        function animateCounter(el, target, suffix, duration) {
+            let start = 0;
+            const step = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += step;
+                if (start >= target) { start = target; clearInterval(timer); }
+                el.textContent = Math.floor(start).toLocaleString() + suffix;
+            }, 16);
+        }
+
+        // Trigger counters when stats bar enters view
+        const statsBar = document.querySelector('.lp-stats-bar');
+        let countersStarted = false;
+        if (statsBar) {
+            const statObs = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !countersStarted) {
+                    countersStarted = true;
+                    animateCounter(document.getElementById('cntAnalyzed'), 12400, '+', 1800);
+                    animateCounter(document.getElementById('cntPredictions'), 38200, '+', 2000);
+                    animateCounter(document.getElementById('cntAccuracy'), 67, '%', 1600);
+                    statObs.disconnect();
+                }
+            }, { threshold: 0.3 });
+            statObs.observe(statsBar);
+        }
+
+        // ── Auth Observer ────────────────────────────────────────────────
+        let _currentUser = null;
+
+        window._auth.auth.onAuthStateChanged(user => {
+            _currentUser = user;
+            const lp = document.getElementById('landingPage');
+            const authOverlay = document.getElementById('authOverlay');
+            
+            // Check visibility
+            const isLpVisible = lp && (lp.style.display !== 'none' && window.getComputedStyle(lp).display !== 'none');
+            const isAuthVisible = authOverlay && (authOverlay.style.display === 'flex' || window.getComputedStyle(authOverlay).display === 'flex');
+
+            if (user) {
+                // If user is logged in, and we are either showing the landing page or the auth overlay,
+                // we should probably proceed to the main app (unless we are in the middle of OTP verification)
+                if (isVerifying) {
+                    if (lp) lp.style.display = 'none';
+                    if (authOverlay) authOverlay.style.display = 'none';
+                    document.getElementById('verifyOverlay').style.display = 'flex';
+                } else {
+                    showMainApp(user);
+                }
+            } else {
+                // Not logged in. Only show auth if they already clicked "Get Started"
+                if (!isLpVisible) {
+                    document.getElementById('authOverlay').style.display = 'flex';
+                    document.getElementById('mainApp').style.display = 'none';
+                    document.getElementById('verifyOverlay').style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
