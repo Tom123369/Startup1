@@ -12,4 +12,4 @@ test_result.json
 *.wav
 .vscode/
 .idea/
-results/
+
