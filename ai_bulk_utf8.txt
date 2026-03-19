@@ -1,0 +1,400 @@
+﻿python : 
+INFO:ai_extractor:AI: 
+Processing 10 videos in 2 
+batches
+At line:1 char:1
++ python test_ai_bulk.py > 
+ai_bulk_out3.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (INFO:ai_e  
+  xtract...os in 2 batches:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+WARNING:ai_extractor:Batch-1: 
+401 on google/gemini-2.0-flash
+-lite:free, trying next 
+model...
+WARNING:ai_extractor:Batch-0: 
+401 on google/gemini-2.0-flash
+-lite:free, trying next 
+model...
+WARNING:ai_extractor:Batch-1: 
+401 on meta-llama/llama-3.3-70
+b-instruct:free, trying next 
+model...
+WARNING:ai_extractor:Batch-1: 
+401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Batch-0: 
+401 on meta-llama/llama-3.3-70
+b-instruct:free, trying next 
+model...
+WARNING:ai_extractor:Batch-1: 
+401 on arcee-ai/trinity-large-
+preview:free, trying next 
+model...
+WARNING:ai_extractor:Batch-1: 
+401 on nvidia/nemotron-nano-9b
+-v2:free, trying next model...
+ERROR:ai_extractor:Batch-1: 
+ALL MODELS FAILED
+WARNING:ai_extractor:Batch-0: 
+401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Batch-0: 
+401 on arcee-ai/trinity-large-
+preview:free, trying next 
+model...
+WARNING:ai_extractor:Batch-0: 
+401 on nvidia/nemotron-nano-9b
+-v2:free, trying next model...
+ERROR:ai_extractor:Batch-0: 
+ALL MODELS FAILED
+INFO:ai_extractor:AI: 
+Retrying 10 missed videos 
+individually...
+WARNING:ai_extractor:Solo--IYM
+Jzs4: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo--Kkk
+ZehC: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-3HT2
+iXJX: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-0Hdj
+_2DT: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-4ny1
+6LfS: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-0rI9
+zA6j: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo--_kb
+KeCA: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-55YP
+pI1q: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo--IYM
+Jzs4: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-483O
+zgxO: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo-5dz7
+kqlC: 401 on google/gemini-2.0
+-flash-lite:free, trying next 
+model...
+WARNING:ai_extractor:Solo--Kkk
+ZehC: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0Hdj
+_2DT: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0rI9
+zA6j: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo--_kb
+KeCA: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-4ny1
+6LfS: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0Hdj
+_2DT: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-483O
+zgxO: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo--IYM
+Jzs4: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-3HT2
+iXJX: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-55YP
+pI1q: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-5dz7
+kqlC: 401 on meta-llama/llama-
+3.3-70b-instruct:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0rI9
+zA6j: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo--Kkk
+ZehC: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo--_kb
+KeCA: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo--IYM
+Jzs4: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0Hdj
+_2DT: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-3HT2
+iXJX: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-4ny1
+6LfS: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-483O
+zgxO: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-55YP
+pI1q: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo-5dz7
+kqlC: 401 on 
+google/gemma-3-27b-it:free, 
+trying next model...
+WARNING:ai_extractor:Solo--_kb
+KeCA: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0rI9
+zA6j: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo--IYM
+Jzs4: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo--IYMJz
+s4: ALL MODELS FAILED
+WARNING:ai_extractor:Solo--Kkk
+ZehC: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-4ny1
+6LfS: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-483O
+zgxO: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0Hdj
+_2DT: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-0Hdj_2
+DT: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-3HT2
+iXJX: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-55YP
+pI1q: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo--_kb
+KeCA: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo--_kbKe
+CA: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-5dz7
+kqlC: 401 on arcee-ai/trinity-
+large-preview:free, trying 
+next model...
+WARNING:ai_extractor:Solo-0rI9
+zA6j: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-0rI9zA
+6j: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-55YP
+pI1q: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-55YPpI
+1q: ALL MODELS FAILED
+WARNING:ai_extractor:Solo--Kkk
+ZehC: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo--KkkZe
+hC: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-3HT2
+iXJX: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-3HT2iX
+JX: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-4ny1
+6LfS: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-4ny16L
+fS: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-5dz7
+kqlC: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-5dz7kq
+lC: ALL MODELS FAILED
+WARNING:ai_extractor:Solo-483O
+zgxO: 401 on nvidia/nemotron-n
+ano-9b-v2:free, trying next 
+model...
+ERROR:ai_extractor:Solo-483Ozg
+xO: ALL MODELS FAILED
+INFO:ai_extractor:Extraction 
+complete: 10 predictions from 
+10/10 videos
+Testing with 10 real videos...
+--- EXTRACTED RESULTS ---
+[
+  {
+    "video_id": "-IYMJzs45Iw",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test -IYMJzs45Iw",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "-KkkZehCl-A",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test -KkkZehCl-A",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "-_kbKeCAELg",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test -_kbKeCAELg",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "0Hdj_2DTzv4",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 0Hdj_2DTzv4",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "0rI9zA6jLRI",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 0rI9zA6jLRI",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "3HT2iXJXlUs",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 3HT2iXJXlUs",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "483OzgxOri4",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 483OzgxOri4",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "4ny16LfS50k",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 4ny16LfS50k",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "55YPpI1qurg",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 55YPpI1qurg",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  },
+  {
+    "video_id": "5dz7kqlC6mQ",
+    "asset": "BTC",
+    "direction": "UP",
+    "target_price": 0,
+    "timeframe": "short-term",
+    "video_title": "Real Video Test 5dz7kqlC6mQ",
+    "publish_date": "",
+    "sentence": "No clear unconditional price target found.",
+    "reasoning": "Model failed to find prediction even in solo retry."
+  }
+]
+Successfully extracted: 10 predictions

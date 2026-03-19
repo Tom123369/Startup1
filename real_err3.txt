@@ -1,0 +1,4 @@
+200
+
+         
+{"id":"gen-1773826203-mFthaL9Ye45pdQp8772H","object":"chat.completion","created":1773826203,"model":"openai/gpt-4o-mini","provider":"OpenAI","system_fingerprint":"fp_ee0bd2cc6f","choices":[{"index":0,"logprobs":null,"finish_reason":"stop","native_finish_reason":"stop","message":{"role":"assistant","content":"Hello! How can I assist you today?","refusal":null,"reasoning":null}}],"usage":{"prompt_tokens":8,"completion_tokens":9,"total_tokens":17,"cost":0.0000066,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"video_tokens":0},"cost_details":{"upstream_inference_cost":0.0000066,"upstream_inference_prompt_cost":0.0000012,"upstream_inference_completions_cost":0.0000054},"completion_tokens_details":{"reasoning_tokens":0,"image_tokens":0,"audio_tokens":0}}}

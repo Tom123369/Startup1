@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "public": "static",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "prediction-analyzer-api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/ws/**",
+        "run": {
+          "serviceId": "prediction-analyzer-api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+﻿python : INFO: Collecting 
+videos: https://www.youtube.co
+m/@CryptoWorldJosh, limit=10
+At line:1 char:1
++ python debug_full.py 2>&1 | 
+Out-File -Encoding utf8 
+debug_output.txt
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (INFO: Col  
+  lectin...dJosh, limit=10:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+INFO: Crawling via yt-dlp for 
+https://www.youtube.com/@Crypt
+oWorldJosh...
+INFO: Collected 10 unique 
+videos.
+INFO: HTTP Request: GET https:
+//www.youtube.com/api/timedtex
+t?v=5ZqzqXNlhgs&ei=_E65afPpKuH
+X1d8P2YP2yQo&caps=asr&opi=1124
+96729&xoaf=5&xowf=1&xospf=1&hl
+=en&ip=0.0.0.0&ipbits=0&expire
+=1773777260&sparams=ip%2Cipbit
+s%2Cexpire%2Cv%2Cei%2Ccaps%2Co
+pi%2Cxoaf&signature=D4AF9EB0A3
+89AA312955FB0BFF8AD226CAF90636
+.0DCEE172C296915D4A7710138F673
+94EDDD3CD28&key=yt8&kind=asr&l
+ang=en&fmt=vtt "HTTP/1.1 429 
+Too Many Requests"
+INFO: HTTP Request: GET https:
+//www.youtube.com/watch?v=5Zqz
+qXNlhgs "HTTP/1.1 200 OK"
+INFO: HTTP Request: GET https:
+//www.youtube.com/api/timedtex
+t?v=qU9GmtDlJV0&ei=CE-5aeP-Iaa
+5pskP09CUyAw&caps=asr&opi=1124
+96729&xoaf=5&xowf=1&xospf=1&hl
+=en&ip=0.0.0.0&ipbits=0&expire
+=1773777272&sparams=ip%2Cipbit
+s%2Cexpire%2Cv%2Cei%2Ccaps%2Co
+pi%2Cxoaf&signature=44D14660BF
+B52A7569AE3D5D6C8A1FDB7C6E1B5E
+.D9FD4728087109AF0616CB86500AA
+95B7A110BE8&key=yt8&kind=asr&l
+ang=en&fmt=vtt "HTTP/1.1 429 
+Too Many Requests"
+INFO: HTTP Request: GET https:
+//www.youtube.com/watch?v=qU9G
+mtDlJV0 "HTTP/1.1 200 OK"
+INFO: HTTP Request: GET https:
+//www.youtube.com/api/timedtex
+t?v=AbKLYQby2dk&ei=E0-5aZr6Os_
+mpskPktrDoAI&caps=asr&opi=1124
+96729&xoaf=5&xowf=1&xospf=1&hl
+=en&ip=0.0.0.0&ipbits=0&expire
+=1773777283&sparams=ip%2Cipbit
+s%2Cexpire%2Cv%2Cei%2Ccaps%2Co
+pi%2Cxoaf&signature=40C9DC31DC
+AFB50A6714FA70061AA901610B30E2
+.E303AE8AEA41CCE857C4D849EB1F1
+214AEB20822&key=yt8&kind=asr&l
+ang=en&fmt=vtt "HTTP/1.1 429 
+Too Many Requests"
+INFO: HTTP Request: GET https:
+//www.youtube.com/watch?v=AbKL
+YQby2dk "HTTP/1.1 200 OK"
+INFO: AI: Processing 1 videos 
+in 1 batches
+ERROR: Batch-0: HTTP 402 on 
+openai/gpt-4o, trying next 
+model...
+INFO: Batch-0: Parsed 2 valid 
+predictions from 1 videos
+INFO: Extraction complete: 2 
+predictions from 1/1 videos
+INFO: AI: Processing 5 videos 
+in 1 batches
+ERROR: Batch-0: HTTP 402 on 
+openai/gpt-4o, trying next 
+model...
+WARNING: Batch-0: No digits 
+in sentence for 5ZqzqXNlhgs, 
+accepting with caution: 
+BITCOIN SHORT SQUEEZE 
+CONFIRMED (This is Next)!!!
+WARNING: Batch-0: No digits 
+in sentence for qU9GmtDlJV0, 
+accepting with caution: The 
+Next PRICE SQUEEZE Just 
+Started!!!
+WARNING: Batch-0: No digits 
+in sentence for AbKLYQby2dk, 
+accepting with caution: It's 
+Happening AGAIN (New Price 
+Target)!!!
+WARNING: Batch-0: No digits 
+in sentence for MhZziRZ05Iw, 
+accepting with caution: 
+BITCOIN PRICE SQUEEZE JUST 
+ENDED (this is next)!!!
+WARNING: Batch-0: No digits 
+in sentence for oEE7Q0RGutM, 
+accepting with caution: 
+BITCOIN & ALTCOINS: Calm 
+Before the Storm (Get 
+Ready)!!!
+INFO: Batch-0: Parsed 5 valid 
+predictions from 5 videos
+INFO: Extraction complete: 5 
+predictions from 5/5 videos
+============================================================
+STAGE 1: Testing Video Collection
+============================================================
+  -> Collected 10 videos
+     5ZqzqXNlhgs | BITCOIN SHORT SQUEEZE CONFIRMED (This is Next)!!!  | 2026-03-17
+     qU9GmtDlJV0 | BITCOIN: The Next PRICE SQUEEZE Just Started!!! -  | 2026-03-16
+     AbKLYQby2dk | BITCOIN: It's Happening AGAIN (New Price Target)!! | 2026-03-15
+
+============================================================
+STAGE 2: Testing Transcript Extraction (3 videos)
+============================================================
+  5ZqzqXNlhgs: 0 chars
+    EMPTY - No transcript found!
+  qU9GmtDlJV0: 0 chars
+    EMPTY - No transcript found!
+  AbKLYQby2dk: 0 chars
+    EMPTY - No transcript found!
+
+============================================================
+STAGE 3: Testing Transcript Filter
+============================================================
+  5ZqzqXNlhgs: SKIP (no transcript)
+  qU9GmtDlJV0: SKIP (no transcript)
+  AbKLYQby2dk: SKIP (no transcript)
+
+============================================================
+STAGE 4: Testing AI Extraction (Direct API call)
+============================================================
+  Bytez/GPT-4o: FAILED (HTTP 402) -> {"error":"You need a min balance of 0.0005610000000000001 credits to access this, but your balance is -0.002354. Please add credits or increase your reload limit at https://bytez.com/api/billing. If y
+  Cerebras/llama3.1-8b: OK (HTTP 200) -> 'HELLO'
+  Groq/llama-3.1-8b-instant: FAILED (HTTP 403) -> {"error":{"message":"Access denied. Please check your network settings."}}
+  OpenRouter/gemini-flash: FAILED (HTTP 401) -> {"error":{"message":"User not found.","code":401}}
+  OpenRouter/llama-3.3: FAILED (HTTP 401) -> {"error":{"message":"User not found.","code":401}}
+
+  Best working provider: Cerebras/llama3.1-8b
+
+============================================================
+STAGE 5: Testing AI Prediction Extraction (real video)
+============================================================
+  WARNING: No video had usable transcript content!
+  Trying with just titles...
+  Testing with video: 5ZqzqXNlhgs - BITCOIN SHORT SQUEEZE CONFIRMED (This is Next)!!! 
+  Content length: 199 chars
+  -> Got 2 predictions
+     Target: $40000.0 | Direction: UP | Timeframe: short-term
+     Sentence: we're gonna see a short squeeze to 40,000
+     Target: $60000.0 | Direction: UP | Timeframe: long-term
+     Sentence: if we break 40, we go to 60,000
+
+============================================================
+STAGE 6: Testing with 5 videos through AI
+============================================================
+  -> Got 5 predictions from 5 videos
+     5ZqzqXNl... | $50000.0 | UP | long-term
+     qU9GmtDl... | $40000.0 | UP | short-term
+     AbKLYQby... | $60000.0 | UP | long-term
+     MhZziRZ0... | $50000.0 | UP | short-term
+     oEE7Q0RG... | $80000.0 | UP | long-term
+
+============================================================
+SUMMARY
+============================================================
+  Videos collected: 10
+  Transcripts with content: 0/3
+  Working AI provider: Cerebras/llama3.1-8b
+  Predictions from 1 video: 2
+  Predictions from 5 videos: 5
+
+  *** PIPELINE IS WORKING! ***
